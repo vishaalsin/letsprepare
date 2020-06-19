@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Quit Quiz {% endblock %}
+
+{% block nav %} 
+<div class="container-fluid yakshnav">
+  <nav class="navbar fixed-top navbar-expand-lg yakshheading yakshnav">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'yaksh:index' %}">
+            <img src="{% static 'yaksh/images/yaksh_banner.png' %}" alt="YAKSH">
+        </a>
+    </div><!-- /.container -->
+  </nav><!-- /.navbar -->
+</div>
+{% endblock %}
+
+{% block content %}
+<center>
+<div class="col-md-8">
+    <h3>Submission Status</h3>
+    <table class="table table-bordered table-responsive-sm" >
+        <thead>
+            <tr class="text-center">
+                <th> Question</th>
+                <th> Status </th>
+            </tr>
+        </thead>
+
+        {% for question in paper.questions.all %}
+            <tbody>
+                {% if question in paper.questions_answered.all %}
+                    <tr class="table-success">
+                    <td> {{ question.summary }} </td>
+                    <td> Attempted </td>
+                {% else %}
+                    <tr class="table-warning">
+                    <td> {{ question }} </td>
+                    <td> Not completed </td>
+                {% endif %}
+                </tr>
+            </tbody>
+        {% endfor %}
+    </table>
+</div>
+</center>
+
+    {% if paper.question_paper.quiz.is_exercise %}
+	    <center><h4> Are you sure you wish to quit the Exercise?</h4></center>
+    {% else %}
+        <center><h4>Your current answers are saved.</h4></center>
+        <center><h4> Are you sure you wish to quit the exam?</h4></center>
+        <center><h4> Be sure, as you won't be able to restart this exam.</h4></center>
+    {% endif %}
+	<form action="{% url 'yaksh:complete' paper.attempt_number module_id paper.question_paper.id course_id %}" method="post">
+	{% csrf_token %}
+	<center>
+        <button class="btn btn-outline-success btn-lg" type="submit" name="yes">Yes</button>
+        <a class="btn btn-outline-danger btn-lg" name="no" href="{% url 'yaksh:start_quiz' paper.attempt_number module_id paper.question_paper.id course_id %}">No</a>
+    </center>
+	</form>
+{% endblock content %}

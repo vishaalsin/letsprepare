@@ -1,0 +1,99 @@
+{% extends "manage.html" %}
+{% block title %} View Grading Systems {% endblock %}
+{% block pagetitle %} View Grading Systems {% endblock %}
+{% block main %}
+<html>
+    <div class="row">
+        <div class="col-md-8">
+            <ul class="nav nav-pills" id="course_tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'yaksh:courses' %}">
+                        My Courses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'yaksh:add_course' %}">
+                        Add/Edit Course
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'grades:grading_systems'%}" class="active nav-link" >
+                        Add/View Grading Systems
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <a href="{% url 'grades:add_grade' %}" class="btn btn-success btn-lg">
+        <span class=" fa fa-plus-circle"></span>&nbsp;Add a Grading System
+    </a>
+    <br><br>
+    <b> Available Grading Systems: </b>
+    <table class="table">
+        <tr>
+            <th>Grading System</th>
+            <th>Grading Ranges</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="{% url 'grades:edit_grade' default_grading_system.id %}">
+            {{ default_grading_system.name }}</a> (<b>Default Grading System</b>)
+            </td>
+            <td>
+                <table class="table">
+                    <tr>
+                        <th>Lower Limit</th>
+                        <th>Upper Limit</th>
+                        <th>Grade</th>
+                        <th>Description</th>
+                    </tr>
+                    {% for range in default_grading_system.graderange_set.all %}
+                        <tr>
+                            <td>{{range.lower_limit}}</td>
+                            <td>{{range.upper_limit}}</td>
+                            <td>{{range.grade}}</td>
+                            {% if range.description %}
+                                <td>{{range.description}}</td>
+                            {% else %}
+                                <td>------</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+        {% if grading_systems %}
+        {% for system in grading_systems %}
+            <tr>
+            <td>
+            <a href="{% url 'grades:edit_grade' system.id %}">{{ system.name }}</a>
+            </td>
+            <td>
+                <table class="table">
+                    <tr>
+                        <th>Lower Limit</th>
+                        <th>Upper Limit</th>
+                        <th>Grade</th>
+                        <th>Description</th>
+                    </tr>
+                    {% for range in system.graderange_set.all %}
+                        <tr>
+                            <td>{{range.lower_limit}}</td>
+                            <td>{{range.upper_limit}}</td>
+                            <td>{{range.grade}}</td>
+                            {% if range.description %}
+                                <td>{{range.description}}</td>
+                            {% else %}
+                                <td>------</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</html>
+{% endblock %}
