@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load static %}
+{% block script %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Courses to Shopping Cart</title>
+    <link rel="stylesheet" href="{% static 'buy/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'buy/css/skeleton.css' %}">
+    <link rel="stylesheet" href="{% static 'buy/css/custom.css' %}">
+</head>
+{% endblock %}
+{% block nav %}
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-primary fixed-top">
+        <a class="navbar-brand" href="{% url 'yaksh:index' %}">
+        <img src="{% static 'yaksh/images/lp.png' %}" alt="YAKSH">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" href="{% url 'yaksh:index' %}"><i class="fa fa-university" style="size: 18px"></i>&nbsp;Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'yaksh:index' %}"><i class="fa fa-bar-chart" style="size: 18px"></i>&nbsp;Results</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'letsprepare:buy' %}"><i class="fa fa-shopping-cart" style="size: 18px"></i>&nbsp;Buy</a></li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="submenu">
+                            <img src="{% static 'buy/img/cart2.png' %}" id="img-cart">
+                <div id="shopping-cart">
+                                    <table id="cart-content" class="u-full-width">
+                                        <thead>
+                                            <tr>
+                                                <th>Image</th>
+                                                <th>Name</th>
+                                                <th>Price</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+
+                                    <a href="#" id="clear-cart" class="button u-full-width">Clear Cart</a>
+                            </div>
+            </li>
+            <li class="nav-item dropdown my-lg-0" style="font-size: 1.2rem">
+                <a class="dropdown-toggle nav-link" id="user_dropdown" data-toggle="dropdown" href="#">{{user.get_full_name|title}}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="{% url 'yaksh:edit_profile' %}">
+                    <i class="fa fa-user"></i>  My Profile
+                </a>
+                <div class="dropdown-divider"></div>
+                {% if user.profile.is_moderator %}
+                    <a class="dropdown-item" href="{% url 'yaksh:toggle_moderator' %}"><i class="fa fa-exchange"></i>
+                        Switch To Moderator
+                    </a>
+                    <div class="dropdown-divider"></div>
+                {% endif %}
+                <a class="dropdown-item" href="{% url 'password_change' %}">
+                    <i class="fa fa-key"></i> Change Password
+                </a>
+                <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" id="user_logout" href="{% url 'yaksh:logout' %}">
+                        <i class="fa fa-sign-out"></i> Logout
+                    </a>
+                </div>
+            </li>
+        </ul>
+        </div>
+    </nav>
+</div>
+{% endblock %}
+
+
+{% block content %}
+  {% block main %}
+    <div id="courses-list" class="container">
+        <h1 id="heading" class="heading">Online Courses</h1>
+        <div class="row">
+            <div class="four columns">
+                <div class="card">
+                    <img src="img/course1.jpg" class="course-image u-full-width">
+                    <div class="info-card">
+                        <h4>HTML5, CSS3, JS for beginners</h4>
+                        <p> A.B.Teachgood </p>
+                        <img src="img/stars.png">
+                        <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                        <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="1">Add to Cart</a>
+                    </div>
+                </div> <!--.card-->
+            </div>
+            <div class="four columns">
+                    <div class="card">
+                        <img src="img/course2.jpg" class="course-image u-full-width">
+                        <div class="info-card">
+                            <h4>Cooking Course</h4>
+                            <p>Top Chef</p>
+                            <img src="img/stars.png">
+                            <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                            <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="2">Add to Cart</a>
+                        </div>
+                    </div>
+            </div>
+            <div class="four columns">
+                    <div class="card">
+                        <img src="img/course3.jpg" class="course-image u-full-width">
+                        <div class="info-card">
+                            <h4>Guitars</h4>
+                            <p>Jimi Hendrix</p>
+                            <img src="img/stars.png">
+                            <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                            <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="3">Add to Cart</a>
+                        </div>
+                    </div> <!--.card-->
+            </div>
+
+        </div> <!--.row-->
+        <div class="row">
+            <div class="four columns">
+                <div class="card">
+                    <img src="img/course4.jpg" class="course-image u-full-width">
+                    <div class="info-card">
+                        <h4>Gardening</h4>
+                        <p> Violet Rose </p>
+                        <img src="img/stars.png">
+                        <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                        <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="4">Add to Cart</a>
+                    </div>
+                </div> <!--.card-->
+            </div>
+            <div class="four columns">
+                    <div class="card">
+                        <img src="img/course5.jpg" class="course-image u-full-width">
+                        <div class="info-card">
+                            <h4>Home Decor </h4>
+                            <p>Stepford Wife</p>
+                            <img src="img/stars.png">
+                            <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                            <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="5">Add to Cart</a>
+                        </div>
+                    </div> <!--.card-->
+            </div>
+            <div class="four columns">
+                    <div class="card">
+                        <img src="img/course1.jpg" class="course-image u-full-width">
+                        <div class="info-card">
+                            <h4>Web Design</h4>
+                            <p>Spiderman</p>
+                            <img src="img/stars.png">
+                            <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                            <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="6">Add to Cart</a>
+                        </div>
+                    </div> <!--.card-->
+            </div>
+        </div> <!--.row-->
+        <div class="row">
+            <div class="four columns">
+                <div class="card">
+                    <img src="img/course2.jpg" class="course-image u-full-width">
+                    <div class="info-card">
+                        <h4>Learn to cook</h4>
+                        <p>Chief Chef</p>
+                        <img src="img/stars.png">
+                        <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                        <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="7">Add to Cart</a>
+                    </div>
+                </div> <!--.card-->
+            </div>
+            <div class="four columns">
+                    <div class="card">
+                        <img src="img/course3.jpg" class="course-image u-full-width">
+                        <div class="info-card">
+                            <h4>Making Music</h4>
+                            <p> Swiss Beats </p>
+                            <img src="img/stars.png">
+                            <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                            <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="8">Add to Cart</a>
+                        </div>
+                    </div> <!--.card-->
+            </div>
+            <div class="four columns">
+                    <div class="card">
+                        <img src="img/course4.jpg" class="course-image u-full-width">
+                        <div class="info-card">
+                            <h4>Growing Fruits and Veges</h4>
+                            <p> Michelle Obama</p>
+                            <img src="img/stars.png">
+                            <p class="price">Sh200  <span class="u-pull-right ">Sh100
+                            </span></p>
+                            <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="9">Add to Cart</a>
+                        </div>
+                    </div> <!--.card-->
+            </div>
+        </div> <!--.row-->
+        <div class="row">
+                <div class="four columns">
+                    <div class="card">
+                        <img src="img/course5.jpg" class="course-image u-full-width">
+                        <div class="info-card">
+                            <h4>Baking</h4>
+                            <p>Baker Mayfield</p>
+                            <img src="img/stars.png">
+                            <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                            <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="10">Add to Cart</a>
+                        </div>
+                    </div> <!--.card-->
+                </div>
+                <div class="four columns">
+                        <div class="card">
+                            <img src="img/course1.jpg" class="course-image u-full-width">
+                            <div class="info-card">
+                                <h4> JavaScript</h4>
+                                <p>Waga Odongo</p>
+                                <img src="img/stars.png">
+                                <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                                <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="11">Add to Cart</a>
+                            </div>
+                        </div> <!--.card-->
+                </div>
+                <div class="four columns">
+                        <div class="card">
+                            <img src="img/course2.jpg" class="course-image u-full-width">
+                            <div class="info-card">
+                                <h4> Natural recipes</h4>
+                                <p> Bear Grylls</p>
+                                <img src="img/stars.png">
+                                <p class="price">Sh200  <span class="u-pull-right ">Sh100</span></p>
+                                <a href="#" class="u-full-width button-primary button input add-to-cart" data-id="12">Add to Cart</a>
+                            </div>
+                        </div> <!--.card-->
+                </div>
+            </div> <!--.row-->
+    </div>
+
+    <script src="{% static 'buy/js/app.js' %}"></script>
+    {% endblock %}
+  {% endblock %}
