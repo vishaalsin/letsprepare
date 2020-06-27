@@ -66,7 +66,7 @@ def loadfixtures(ctx):
 @task(setupdb, loadfixtures)
 def serve(ctx):
     print("** Running the Django web server. Press Ctrl-C to Exit **")
-    ctx.run("{} manage.py runserver".format(PYTHON_COMMAND))
+    ctx.run("{} manage.py runserver 0.0.0.0:8000".format(PYTHON_COMMAND))
 
 
 @task
