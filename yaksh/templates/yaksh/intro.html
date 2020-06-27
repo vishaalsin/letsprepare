@@ -10,17 +10,6 @@
       {{questionpaper.quiz.description}}
     </div>
     <div class="card-body">
-      {% if questionpaper.quiz.is_expired %}
-          <div class="alert alert-error">
-              This Quiz has expired. You can no longer attempt this Quiz.
-          </div>
-      {% else %}
-          <div class="alert alert-info">
-              You can attempt this Quiz at any time between <b>{{ questionpaper.quiz.start_date_time }}</b> and <b>{{ questionpaper.quiz.end_date_time }}</b>
-          </div>
-      {% endif %}
-      <p> Welcome <strong>{{user.get_full_name|title}}</strong>, to the programming quiz! </p>
-      {{ questionpaper.quiz.instructions|safe }}
       <div class="row">
         <div class="col-md-6">
           <center>

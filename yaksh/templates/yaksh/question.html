@@ -58,6 +58,23 @@ function getTimeRemaining(endtime){
   };
 }
 
+function report(){
+var error = window.prompt("Please describe the error: ");
+var question_id = parseInt(document.getElementById('question_id')['value'])
+
+submitData = {'question_id' : question_id, 'error' : error, 'module_id' : parseInt(module_id), 'course_id' : parseInt(course_id)}
+
+$.post("/letsprepare/report_error/",
+{
+data: JSON.stringify(submitData)
+},
+function(data, status){
+alert("Thanks for reporting error. " + status);
+});
+}
+
+
+
 function updateTime()
 {
 var timeInSeconds = time_left;
@@ -180,8 +197,8 @@ question_type = "{{ question.type }}";
             {% elif question.type == "arrange" %}
               <small class="text text-muted"><strong>Type:</strong> <span class="badge badge-primary">ARRANGE THE OPTIONS IN CORRECT ORDER</span></small>
             {% endif %}
-            <span class="badge badge-info pull-right">
-              <small><strong>Marks: {{ question.points }}</strong></small>
+            <span class="badge badge-warning pull-right" onclick="report()">
+              <small><strong>Report Error</strong></small>
             </span>
           </div>
         </div>

@@ -1,0 +1,66 @@
+{% extends "user.html" %}
+{% block title %} Student Dashboard {% endblock %}
+
+{% block script %}
+
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <center>
+        <h2>{{title}}</h2>
+    </center>
+    <hr>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-dismissible alert-{{ message.tags }}">
+        <button type="button" class="close" data-dismiss="alert">
+            <i class="fa fa-close"></i>
+        </button>
+        <strong>{{ message }}</strong>
+    </div>
+    <br>
+    {% endfor %}
+    {% endif %}
+
+    {% if not modules %}
+    <center>
+        <div class="col-md-8 alert alert-warning" role="alert">
+            No Modules to display
+        </div>
+    </center>
+    {% endif %}
+    <div class="tab-content">
+        <div class="tab-pane active" id="gridview" role="tabpanel" aria-labelledby="gridbtn">
+            <!-- GridView -->
+            <br>
+            <div class="row">
+                <br>
+                {% for module in modules %}
+                <div class="col-md-4">
+                    <div class="card border-primary">
+                        <div class="card-header" style="height: 150px">
+                            {{module.name}}
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    ({{ module.has_quizzes }}/{{ module.total_quizzes }} available)
+                                </div>
+                            <div class="col-md-6"><center>
+                                <a href="/letsprepare/exam/?id={{module.id}}" class="btn btn-success btn-md">
+                                    Continue
+                                </a></center>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                {% endfor %}
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

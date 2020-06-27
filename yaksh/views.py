@@ -24,6 +24,10 @@ import json
 from textwrap import dedent
 import zipfile
 from markdown import Markdown
+
+from letsprepare.models import AvailableQuizzes
+from letsprepare.serializers import AvailableQuizzesSerializer
+
 try:
     from StringIO import StringIO as string_io
 except ImportError:
@@ -76,10 +80,15 @@ def is_moderator(user, group_name=MOD_GROUP_NAME):
     """Check if the user is having moderator rights"""
     try:
         group = Group.objects.get(name=group_name)
-        return user.profile.is_moderator and user in group.user_set.all()
+        profile =  user.profile
+        if profile.is_moderator:
+            return True
+    # and user in group.user_set.all()
     except Profile.DoesNotExist:
         return False
     except Group.DoesNotExist:
+        return False
+    except:
         return False
 
 
@@ -139,7 +148,7 @@ def user_register(request):
             u_name, pwd, user_email, key = form.save()
             new_user = authenticate(username=u_name, password=pwd)
             login(request, new_user)
-            _add_to_course(new_user, list(Course.objects.all())[0])
+            initiate_user(new_user)
             if user_email and key:
                 success, msg = send_user_mail(user_email, key)
                 context = {'activation_msg': msg}
@@ -157,6 +166,18 @@ def user_register(request):
         return my_render_to_response(
             request, 'yaksh/register.html', {'form': form}
         )
+
+
+def initiate_user(new_user):
+    _add_to_course(new_user, list(Course.objects.all())[0])
+    free_quizzes = Quiz.objects.filter(is_free = True)
+    for quiz in free_quizzes:
+        data = {'user': new_user.id,
+                'quiz': quiz.id
+                }
+        available_quizzes_serializer = AvailableQuizzesSerializer(data=data)
+        if available_quizzes_serializer.is_valid():
+            available_quizzes_serializer.save()
 
 
 def user_logout(request):
@@ -507,6 +528,9 @@ def start(request, questionpaper_id=None, attempt_num=None, course_id=None,
     """Check the user cedentials and if any quiz is available,
     start the exam."""
     user = request.user
+    availableQuizzes = json.loads(
+        json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user), many=True).data))
+    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
     # check conditions
     try:
         quest_paper = QuestionPaper.objects.get(id=questionpaper_id)
@@ -524,6 +548,9 @@ def start(request, questionpaper_id=None, attempt_num=None, course_id=None,
             return prof_manage(request, msg=msg)
         return view_module(request, module_id=module_id, course_id=course_id,
                            msg=msg)
+    if quest_paper.quiz.id not in availableQuizIds:
+        messages.warning(request, 'Quiz not available. Please unlock.')
+        return my_redirect('/letsprepare/buy')
     course = Course.objects.get(id=course_id)
     learning_module = course.learning_module.get(id=module_id)
     learning_unit = learning_module.learning_unit.get(quiz=quest_paper.quiz.id)
@@ -533,19 +560,19 @@ def start(request, questionpaper_id=None, attempt_num=None, course_id=None,
         return view_module(request, module_id, course_id)
 
     # unit module prerequiste check
-    if learning_module.has_prerequisite():
-        if not learning_module.is_prerequisite_complete(user, course):
-            msg = "You have not completed the module previous to {0}".format(
-                learning_module.name)
-            return course_modules(request, course_id, msg)
-
-    if learning_module.check_prerequisite_passes:
-        if not learning_module.is_prerequisite_passed(user, course):
-            msg = (
-                "You have not successfully passed the module"
-                " previous to {0}".format(learning_module.name)
-            )
-            return course_modules(request, course_id, msg)
+    # if learning_module.has_prerequisite():
+    #     if not learning_module.is_prerequisite_complete(user, course):
+    #         msg = "You have not completed the module previous to {0}".format(
+    #             learning_module.name)
+    #         return course_modules(request, course_id, msg)
+    #
+    # if learning_module.check_prerequisite_passes:
+    #     if not learning_module.is_prerequisite_passed(user, course):
+    #         msg = (
+    #             "You have not successfully passed the module"
+    #             " previous to {0}".format(learning_module.name)
+    #         )
+    #         return course_modules(request, course_id, msg)
 
     # is user enrolled in the course
     if not course.is_enrolled(user):
@@ -571,14 +598,14 @@ def start(request, questionpaper_id=None, attempt_num=None, course_id=None,
                            msg=msg)
 
     # prerequisite check and passing criteria for quiz
-    if learning_unit.has_prerequisite():
-        if not learning_unit.is_prerequisite_complete(
-                user, learning_module, course):
-            msg = "You have not completed the previous Lesson/Quiz/Exercise"
-            if is_moderator(user) and course.is_trial:
-                return prof_manage(request, msg=msg)
-            return view_module(request, module_id=module_id,
-                               course_id=course_id, msg=msg)
+    # if learning_unit.has_prerequisite():
+    #     if not learning_unit.is_prerequisite_complete(
+    #             user, learning_module, course):
+    #         msg = "You have not completed the previous Lesson/Quiz/Exercise"
+    #         if is_moderator(user) and course.is_trial:
+    #             return prof_manage(request, msg=msg)
+    #         return view_module(request, module_id=module_id,
+    #                            course_id=course_id, msg=msg)
 
     # update course status with current unit
     _update_unit_status(course_id, user, learning_unit)
@@ -2668,7 +2695,8 @@ def edit_lesson(request, course_id=None, module_id=None, lesson_id=None):
 @login_required
 @email_verified
 def show_lesson(request, lesson_id, module_id, course_id):
-    return my_redirect('/letsprepare')
+    if not is_moderator(request.user):
+        return my_redirect('/letsprepare')
     user = request.user
     course = Course.objects.get(id=course_id)
     if user not in course.students.all():
@@ -3020,8 +3048,17 @@ def design_course(request, course_id):
 
 @login_required
 @email_verified
+def view_module_(request, msg=None):
+    context = {}
+    context['messages'] = [msg]
+    return my_render_to_response(request, 'yaksh/all_modules.html', context)
+
+
+@login_required
+@email_verified
 def view_module(request, module_id, course_id, msg=None):
-    return my_redirect('/letsprepare')
+    if not is_moderator(request.user):
+        return my_redirect('/letsprepare')
     user = request.user
     course = Course.objects.get(id=course_id)
     if user not in course.students.all():
@@ -3065,6 +3102,8 @@ def view_module(request, module_id, course_id, msg=None):
 @login_required
 @email_verified
 def course_modules(request, course_id, msg=None):
+    if not is_moderator(request.user):
+        return my_redirect('/letsprepare')
     user = request.user
     course = Course.objects.get(id=course_id)
     if user not in course.students.all():
@@ -3217,7 +3256,7 @@ def download_course(request, course_id):
                     "css": ["bootstrap.min.css",
                             "video-js.css", "offline.css",
                             "yakshcustom.css"],
-                    "images": ["yaksh_banner.png"]}
+                    "images": ["lp.png"]}
     zip_file = course.create_zip(current_dir, static_files)
     zip_file.seek(0)
     response = HttpResponse(content_type='application/zip')
@@ -3269,6 +3308,8 @@ def course_teachers(request, course_id):
 @login_required
 @email_verified
 def get_course_modules(request, course_id):
+    if not is_moderator(request.user):
+        return my_redirect('/letsprepare')
     user = request.user
     if not is_moderator(user):
         raise Http404('You are not allowed to view this page!')
@@ -3382,7 +3423,6 @@ def course_forum(request, course_id):
         'moderator': moderator,
         'objects': posts,
         'form': form,
-        'user': user
         })
 
 

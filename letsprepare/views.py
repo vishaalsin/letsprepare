@@ -1,71 +1,189 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
-from rest_framework import status
-from rest_framework.parsers import JSONParser
-from rest_framework.views import APIView
-
-from letsprepare.serializers import examSerializer
+from django.views.decorators.csrf import csrf_exempt
 from yaksh.decorators import has_profile
-from yaksh.models import QuestionPaper
+from yaksh.models import QuestionPaper, AnswerPaper
+from yaksh.models import LearningModule
 from yaksh.views import my_render_to_response
-from .models import Exams
-
-class examCrud(APIView):
-    @login_required
-    @has_profile
-    def get(self, request):
-        exams = Exams.objects.all()
-        exam_serializer = examSerializer(exams, many=True)
-        return JsonResponse(exam_serializer.data, status=status.HTTP_200_OK, safe=False)
-
-    @login_required
-    @has_profile
-    def post(self, request):
-        exam_data = JSONParser().parse(request)
-        exam_serializer = examSerializer(data=exam_data)
-        if exam_serializer.is_valid():
-            exam_serializer.save()
-            return JsonResponse(exam_serializer.data, status=status.HTTP_201_CREATED)
-        return JsonResponse(exam_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @login_required
-    @has_profile
-    def delete(request, exam_pk):
-        exam = Exams.objects.get(pk=exam_pk)
-        exam_serializer = examSerializer(exam, many=True)
-        return JsonResponse(exam_serializer.data, status=status.HTTP_200_OK)
+from rest_framework import status
+from letsprepare.models import AvailableQuizzes
+from letsprepare.serializers import AvailableQuizzesSerializer, ErrorSerializer
+import json
+from plotly.offline import plot
+import plotly.graph_objs as go
 
 @login_required
 @has_profile
 def show_all_quizzes(request):
     user = request.user
     id = request.GET['id']
-    exam = list(Exams.objects.filter(id=id))[0]
-    question_papers = QuestionPaper.objects.filter(exam=exam.id)
-    modules = []
-    for qp in question_papers:
-        modules.append({
-            'name': qp.name,
-            'id': qp.id
-        })
+    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user), many=True).data))
+    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    module = LearningModule.objects.get(id = id)
+    quizzes = module.get_quiz_units()
+    answerpapers = AnswerPaper.objects.filter(user=request.user)
+    question_papers_attempted = [i.question_paper.id for i in answerpapers]
+    question_papers_data = []
+    for qz in quizzes:
+        for qp in list(QuestionPaper.objects.filter(quiz=qz.id)):
+            question_papers_data.append({
+                'code' : qz.quiz_code,
+                'name': qz.description,
+                'id': qp.id,
+                'attempts' : question_papers_attempted.count(qp.id)
+            })
+            if qz.id in availableQuizIds:
+                question_papers_data[-1]['available'] = True
+            else:
+                question_papers_data[-1]['available'] = False
+
     context = {
-        'course' : exam.exam_name,
+        'module' : module.name,
+        'module_id' : module.id,
         'user': user,
-        'modules': modules
+        'question_papers': question_papers_data
     }
-    return render(request, 'yaksh/all_quizes.html', context)
+    return render(request, 'yaksh/all_question_papers.html', context)
 
 @login_required
 @has_profile
-def show_all_exams(request):
+def show_all_modules(request):
     user = request.user
     # exams = Exams.objects.all()
-    courses_data = []
-    for exam in list(Exams.objects.all()):
-        courses_data.append({'name' : exam.exam_name, 'id' : exam.id})
+    modules_data = []
+    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user), many=True).data))
+    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    for module in list(LearningModule.objects.all()):
+        quizzes = [quiz.id for quiz in module.get_quiz_units()]
+        has_quizzes = 0
+        for quiz_id in quizzes:
+            if quiz_id in availableQuizIds:
+                has_quizzes += 1
+        modules_data.append({'name' : module.description, 'id' : module.id,
+                              'total_quizzes' : len(quizzes), 'has_quizzes' : has_quizzes })
     context = {
-        'user': user, 'courses': courses_data,
-        'title': 'ALL AVAILABLE EXAMS'
+        'user': user, 'modules': modules_data,
+        'title': 'ALL  AVAILABLE  MODULES'
     }
-    return my_render_to_response(request, "yaksh/all_exams.html", context)
+    return my_render_to_response(request, "yaksh/all_modules.html", context)
+
+@login_required
+@has_profile
+def show_all_on_sale(request):
+    user = request.user
+    modules_data = []
+    for module in list(LearningModule.objects.all()):
+        quizzes = module.get_quiz_units()
+        quiz_data = []
+        for quiz in list(quizzes):
+            quiz_data.append({'name': quiz.description, 'code' : quiz.quiz_code, 'price' : quiz.price, 'id':quiz.id})
+        modules_data.append({'name': module.description, 'id': module.id, 'quizzes': quiz_data, 'state': 'Active'})
+
+    context = {
+        'user': user, 'modules': modules_data,
+        'title': 'ALL  AVAILABLE  MODULES'
+    }
+    return my_render_to_response(request, "yaksh/all_on_sale.html", context)
+
+@csrf_exempt
+@login_required
+@has_profile
+def assign_quizzes(request):
+    results = json.loads(request.POST['data'])
+
+    try:
+        for quiz in results['quizzes']:
+            data = {'user' : request.user.id,
+                    'quiz' : quiz
+                    }
+            available_quizzes_serializer = AvailableQuizzesSerializer(data=data)
+            if available_quizzes_serializer.is_valid():
+                available_quizzes_serializer.save()
+
+        return JsonResponse({'SUCCESS': 'Thanks for buying!!'}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return JsonResponse(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+@login_required
+def show_results(request):
+    answerpapers = AnswerPaper.objects.filter(user = request.user)
+    question_papers_attempted = [i.question_paper for i in answerpapers]
+    question_papers_data = []
+    for qp in set(question_papers_attempted):
+        question_papers_data.append({
+            'code' : qp.quiz.quiz_code,
+            'name': qp.quiz.description,
+            'id': qp.id
+        })
+    fig = get_percentage_graph(question_papers_attempted,answerpapers)
+    plot_div = plot(fig,
+        output_type='div',config=dict(
+                    displayModeBar=False
+                ))
+    return my_render_to_response(request, "yaksh/results.html", context={'question_papers' : question_papers_data, 'plot_div': plot_div})
+
+
+def get_percentage_graph(question_papers_attempted, answerpapers):
+    attempt_dict = {}
+    for qp, ap in zip(question_papers_attempted,answerpapers):
+        if qp.quiz.id in attempt_dict.keys():
+            attempt_dict[qp.quiz.id].append(ap.percent)
+        else:
+            attempt_dict[qp.quiz.id] = []
+            attempt_dict[qp.quiz.id].append(ap.percent)
+
+    unique_question_papers_attempted = [int(i) for i in attempt_dict.keys()]
+    fy = []
+    sy = []
+    ty = []
+
+    for uqp in unique_question_papers_attempted:
+        try:
+            fy.append(attempt_dict[uqp][0])
+        except:
+            fy.append(0)
+        try:
+            sy.append(attempt_dict[uqp][1])
+        except:
+            sy.append(0)
+        try:
+            ty.append(attempt_dict[uqp][2])
+        except:
+            ty.append(0)
+
+    trace1 = go.Bar(
+        x=unique_question_papers_attempted,
+        y=fy,
+        name='Attempt 1'
+    )
+    trace2 = go.Bar(
+        x=unique_question_papers_attempted,
+        y=sy,
+        name='Attempt 2'
+    )
+    trace3 = go.Bar(
+        x=unique_question_papers_attempted,
+        y=ty,
+        name='Attempt 3'
+    )
+    data = [trace1, trace2, trace3]
+    layout = go.Layout(barmode='group')
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+@csrf_exempt
+@login_required
+@has_profile
+def report_error(request):
+    data = json.loads(request.POST['data'])
+    try:
+        error_serializer = ErrorSerializer(data=data)
+        if error_serializer.is_valid():
+            error_serializer.save()
+
+        return JsonResponse({'SUCCESS': 'Thanks for buying!!'}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return JsonResponse(str(e), status=status.HTTP_400_BAD_REQUEST)

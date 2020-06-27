@@ -18,8 +18,6 @@ from django.utils import timezone
 from django.core.files import File
 import glob
 
-from letsprepare.models import Exams
-
 try:
     from StringIO import StringIO as string_io
 except ImportError:
@@ -463,6 +461,11 @@ class Quiz(models.Model):
     # This is always in minutes.
     duration = models.IntegerField("Duration of quiz in minutes", default=20)
 
+    price = models.IntegerField(default=100)
+
+
+    quiz_code = models.CharField(max_length=256, default='QUIZCODE')
+
     # Is the quiz active. The admin should deactivate the quiz once it is
     # complete.
     active = models.BooleanField(default=True)
@@ -474,7 +477,7 @@ class Quiz(models.Model):
     pass_criteria = models.FloatField("Passing percentage", default=40)
 
     # Number of attempts for the quiz
-    attempts_allowed = models.IntegerField(default=1, choices=attempts)
+    attempts_allowed = models.IntegerField(default=-1, choices=attempts)
 
     time_between_attempts = models.FloatField(
         "Time Between Quiz Attempts in hours", default=0.0
@@ -482,11 +485,13 @@ class Quiz(models.Model):
 
     is_trial = models.BooleanField(default=False)
 
+    is_free = models.BooleanField(default=False)
+
     instructions = models.TextField('Instructions for Students',
                                     default=None, blank=True, null=True)
 
     view_answerpaper = models.BooleanField('Allow student to view their answer\
-                                            paper', default=False)
+                                            paper', default=True)
 
     allow_skip = models.BooleanField("Allow students to skip questions",
                                      default=True)
@@ -1301,7 +1306,7 @@ class Question(models.Model):
     language = models.CharField(max_length=24,
                                 choices=languages)
 
-    topic = models.CharField(max_length=50, blank=True, null=True)
+    topic = models.CharField(max_length=150, blank=True, null=True)
 
     # The type of question.
     type = models.CharField(max_length=24, choices=question_types)
@@ -1717,10 +1722,6 @@ class QuestionPaper(models.Model):
 
     # Question paper belongs to a particular quiz.
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-
-    name = models.CharField(max_length=255, blank=False)
-
-    exam = models.ForeignKey(Exams, on_delete=models.CASCADE)
 
     # Questions that will be mandatory in the quiz.
     fixed_questions = models.ManyToManyField(Question)
