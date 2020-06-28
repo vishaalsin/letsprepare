@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY', default='dUmMy_s3cR3t_k3y')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 
 URL_ROOT = ''
 
@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'online_test.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'new',
+        'NAME': 'new10',
         'USER': 'vishaal',
         'PASSWORD': 'password',
         'HOST': 'localhost',

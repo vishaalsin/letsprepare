@@ -121,7 +121,7 @@ def show_results(request):
     plot_div = plot(fig,
         output_type='div',config=dict(
                     displayModeBar=False
-                ))
+                ), include_plotlyjs=False)
     return my_render_to_response(request, "yaksh/results.html", context={'question_papers' : question_papers_data, 'plot_div': plot_div})
 
 
