@@ -58,6 +58,8 @@ from .send_emails import (send_user_mail,
 from .decorators import email_verified, has_profile
 from .tasks import regrade_papers
 from notifications_plugin.models import Notification
+from plotly.offline import plot
+import plotly.graph_objs as go
 
 
 def my_redirect(url):
@@ -2174,6 +2176,18 @@ def test_quiz(request, mode, quiz_id, course_id=None):
     return my_redirect("/exam/start/{0}/{1}/{2}".format(
         trial_questionpaper.id, trial_module.id, trial_course.id))
 
+def get_pie_charts(answer_papers):
+    figs = []
+    colors = ['#28B52D', '#DC143C', '#FFFF00']
+    for ap in answer_papers:
+        labels = ['correct', 'incorrect', 'unattempted']
+        correct = ap.marks_obtained
+        values = [correct, len(ap.questions_answered.all()) - correct, len(ap.questions_unanswered.all())]
+        trace = go.Pie(labels=labels, values=values,hole = 0.2,marker=dict(colors=colors))
+        figs.append(go.Figure(data=[trace]))
+    return figs
+
+
 
 @login_required
 @email_verified
@@ -2188,6 +2202,20 @@ def view_answerpaper(request, questionpaper_id, course_id):
             user=user, course_id=course.id,
             question_paper_id=questionpaper_id
         ).exists()
+        papers = [i for i in data['papers']]
+        figs = get_pie_charts(papers)
+        figs_ = []
+        for fig,paper in zip(figs,papers):
+            plot_div = plot(fig,
+                             output_type='div', config=dict(
+                    displayModeBar=False,
+                    dragMode=False,
+                    scrollZoom=False,
+                    staticPlot=True
+                ), include_plotlyjs=False)
+
+            figs_.append(plot_div)
+        data['papers'] = zip(figs_,papers)
         context = {'data': data, 'quiz': quiz, 'course_id': course.id,
                    "has_user_assignment": has_user_assignment}
         return my_render_to_response(

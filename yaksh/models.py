@@ -477,7 +477,7 @@ class Quiz(models.Model):
     pass_criteria = models.FloatField("Passing percentage", default=40)
 
     # Number of attempts for the quiz
-    attempts_allowed = models.IntegerField(default=-1, choices=attempts)
+    attempts_allowed = models.IntegerField(default=2, choices=attempts)
 
     time_between_attempts = models.FloatField(
         "Time Between Quiz Attempts in hours", default=0.0

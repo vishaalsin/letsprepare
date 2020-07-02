@@ -120,26 +120,38 @@ def show_results(request):
     fig = get_percentage_graph(question_papers_attempted,answerpapers)
     plot_div = plot(fig,
         output_type='div',config=dict(
-                    displayModeBar=False
+                    displayModeBar=False,
+                    dragMode=False,
+                    scrollZoom=False,
+                    staticPlot= True
                 ), include_plotlyjs=False)
-    return my_render_to_response(request, "yaksh/results.html", context={'question_papers' : question_papers_data, 'plot_div': plot_div})
+    fig2 = get_accuracy_graph(question_papers_attempted, answerpapers)
+    plot_div2 = plot(fig2,
+                    output_type='div', config=dict(
+            displayModeBar=False,
+            dragMode=False,
+            scrollZoom=False,
+            staticPlot=True
+        ), include_plotlyjs=False)
+    return my_render_to_response(request, "yaksh/results.html", context={'question_papers' : question_papers_data, 'plot_div': plot_div, 'plot_div2': plot_div2})
 
 
-def get_percentage_graph(question_papers_attempted, answerpapers):
+def get_accuracy_graph(question_papers_attempted, answerpapers):
     attempt_dict = {}
-    for qp, ap in zip(question_papers_attempted,answerpapers):
-        if qp.quiz.id in attempt_dict.keys():
-            attempt_dict[qp.quiz.id].append(ap.percent)
+    qa_tups = zip(question_papers_attempted,answerpapers)
+    qa_tups_ordered = [qa for qa in sorted(qa_tups, key=lambda item: item[1].end_time)]
+    for qp, ap in qa_tups_ordered:
+        if qp.quiz.quiz_code in attempt_dict.keys():
+            attempt_dict[qp.quiz.quiz_code].append(round(((ap.marks_obtained)/len(ap.questions_answered.all())*100),2))
         else:
-            attempt_dict[qp.quiz.id] = []
-            attempt_dict[qp.quiz.id].append(ap.percent)
+            attempt_dict[qp.quiz.quiz_code] = []
+            attempt_dict[qp.quiz.quiz_code].append(round(((ap.marks_obtained)/len(ap.questions_answered.all()))*100,2))
 
-    unique_question_papers_attempted = [int(i) for i in attempt_dict.keys()]
     fy = []
     sy = []
-    ty = []
 
-    for uqp in unique_question_papers_attempted:
+    attempts = list(attempt_dict.keys())
+    for uqp in attempts:
         try:
             fy.append(attempt_dict[uqp][0])
         except:
@@ -148,28 +160,74 @@ def get_percentage_graph(question_papers_attempted, answerpapers):
             sy.append(attempt_dict[uqp][1])
         except:
             sy.append(0)
-        try:
-            ty.append(attempt_dict[uqp][2])
-        except:
-            ty.append(0)
 
     trace1 = go.Bar(
-        x=unique_question_papers_attempted,
+        x=attempts,
         y=fy,
-        name='Attempt 1'
+        text=[str(i) for i in fy],
+        textposition='outside',
+        name='Attempt 1',
+        hoverinfo='skip'
     )
     trace2 = go.Bar(
-        x=unique_question_papers_attempted,
+        x=attempts,
         y=sy,
-        name='Attempt 2'
+        text=[str(i) for i in sy],
+        textposition='outside',
+        name='Attempt 2',
+        hoverinfo='skip'
     )
-    trace3 = go.Bar(
-        x=unique_question_papers_attempted,
-        y=ty,
-        name='Attempt 3'
+
+    data = [trace1, trace2]
+    layout = go.Layout(barmode='group', yaxis=dict(range=[0, 108]))
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+
+def get_percentage_graph(question_papers_attempted, answerpapers):
+    attempt_dict = {}
+    qa_tups = zip(question_papers_attempted,answerpapers)
+    qa_tups_ordered = [qa for qa in sorted(qa_tups, key=lambda item: item[1].end_time)]
+    for qp, ap in qa_tups_ordered:
+        if qp.quiz.quiz_code in attempt_dict.keys():
+            attempt_dict[qp.quiz.quiz_code].append(ap.percent)
+        else:
+            attempt_dict[qp.quiz.quiz_code] = []
+            attempt_dict[qp.quiz.quiz_code].append(ap.percent)
+
+    fy = []
+    sy = []
+
+    attempts = list(attempt_dict.keys())
+    for uqp in attempts:
+        try:
+            fy.append(attempt_dict[uqp][0])
+        except:
+            fy.append(0)
+        try:
+            sy.append(attempt_dict[uqp][1])
+        except:
+            sy.append(0)
+
+    trace1 = go.Bar(
+        x=attempts,
+        y=fy,
+        text=[str(i) for i in fy],
+        textposition='outside',
+        name='Attempt 1',
+        hoverinfo='skip'
     )
-    data = [trace1, trace2, trace3]
-    layout = go.Layout(barmode='group')
+    trace2 = go.Bar(
+        x=attempts,
+        y=sy,
+        text=[str(i) for i in sy],
+        textposition='outside',
+        name='Attempt 2',
+        hoverinfo='skip'
+    )
+
+    data = [trace1, trace2]
+    layout = go.Layout(barmode='group', yaxis=dict(range=[0, 108]))
     fig = go.Figure(data=data, layout=layout)
     return fig
 

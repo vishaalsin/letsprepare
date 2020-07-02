@@ -6,6 +6,7 @@
 {% block pagetitle %} Answer Paper  for {{ quiz.description }}{% endblock pagetitle %}
 
 {% block script %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="text/javascript" src="{% static 'yaksh/js/jquery.tablesorter.min.js' %}">
 </script>
 <script type="text/javascript" src="{% static 'yaksh/js/mathjax/MathJax.js' %}?config=TeX-MML-AM_CHTML"></script>
@@ -18,51 +19,15 @@
   </a>
   <br><br>
   {% if data.papers %}
-    <p class="text-center">
-    {% with data.papers.0 as paper %}
-      <div class="card">
-        <div class="card-header">
-          Course Details
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-6">
-              <p><b>Course:</b> {{ paper.course.name }}</p>
-              <p><b>Quiz:</b> {{ paper.question_paper.quiz.description }}</p>
-            </div>
-            <div class="col-md-6">
-              <p><b>Start time:</b> {{ paper.start_time }}</p>
-              <p><b>End time:</b> {{ paper.end_time }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endwith %}
-    {% for paper in data.papers %}
+    {% for fig, paper in data.papers %}
       <br>
       <h3><b><u>Attempt Number:</u></b>&nbsp;<span class="badge badge-pill badge-info">
         {{paper.attempt_number}}
       </span></h3>
-      <div class="card">
-        <div class="card-header">
-          Scorecard
-        </div>
-        <div class="card-body">
-          <p><b>Status:</b>
-          {% if paper.passed %}
-            <span class="badge badge-pill badge-success"> Passed </span>
-          {% else %}
-            <span class="badge badge-pill badge-danger"> Failed </span>
-          {% endif %}
-          </p>
-          <p><b>Total Marks:</b> {{ paper.question_paper.total_marks }}</p>
-          <p><b>Marks obtained:</b> {{ paper.marks_obtained }}</p>
-          {% if paper.percent %}
-            <p><b>Percentage obtained:</b> {{paper.percent}}%</p>
-          {% endif %}
-          <p><b>Total attempts at questions:</b> {{ paper.answers.count }}</p>
-        </div>
-      </div>
+              {% autoescape off %}
+              {{ fig }}
+              {% endautoescape %}
+
       <br>
       {% if paper.answers.count %}
         <div class="card">
@@ -74,7 +39,7 @@
               <thead>
                 <tr>
                 <th>Questions</th>
-                <th>Type</th>
+<!--                <th>Type</th>-->
                 <th>Marks Obtained</th>
                 </tr>
                 </thead>
@@ -87,7 +52,7 @@
                           {{ question.summary }}
                         </a>
                       </td>
-                      <td>{{ question.type }}</td>
+<!--                      <td>{{ question.type }}</td>-->
                       <td>{{ answer.answer.marks }}</td>
                       </tr>
                   {% endwith %}
@@ -96,12 +61,12 @@
             </table>
             {% for question, answers in paper.get_question_answers.items %}
               <div class="card" id="question_{{question.id}}">
-                <div class="card-header text-white bg-info">
-                  <strong>
-                    Details: {{forloop.counter}}. {{ question.summary }}
-                    <span class="marks pull-right"> Mark(s): {{ question.points }} </span>
-                  </strong>
-                </div>
+<!--                <div class="card-header text-white bg-info">-->
+<!--                  <strong>-->
+<!--                    Details: {{forloop.counter}}. {{ question.summary }}-->
+<!--                    <span class="marks pull-right"> Mark(s): {{ question.points }} </span>-->
+<!--                  </strong>-->
+<!--                </div>-->
                 <div class="card-body">
                   <h5>
                     <span class="badge badge-pill badge-primary">Question:</span>
@@ -166,20 +131,20 @@
                         <br>
                     {% endfor %}
                   {% endif %}
+<!--                  <br>-->
+<!--                  <div class="card">-->
+<!--                    <div class="card-body">-->
+<!--                      <span class="badge badge-pill badge-success">-->
+<!--                        Solution for the question-->
+<!--                      </span><br><br>-->
+<!--                      {{ question.solution|safe }}-->
+<!--                    </div>-->
+<!--                  </div>-->
                   <br>
-                  <div class="card">
-                    <div class="card-body">
-                      <span class="badge badge-pill badge-success">
-                        Solution for the question
-                      </span><br><br>
-                      {{ question.solution|safe }}
-                    </div>
-                  </div>
-                  <br>
-                  <h5>
-                    <span class="badge badge-pill badge-primary">Student answer(s):
-                    </span>
-                  </h5>
+<!--                  <h5>-->
+<!--                    <span class="badge badge-pill badge-primary">Student answer(s):-->
+<!--                    </span>-->
+<!--                  </h5>-->
                   {% if question.type == "upload" %}
                     {% if has_user_assignments %}
                       <a href="{% url 'yaksh:download_user_assignment' question.id data.user.id paper.question_paper.quiz.id course_id %}">
@@ -198,35 +163,37 @@
                     {% endif %} <!-- End has_user_assignments -->
                   {% else %}
                   {% for ans in answers %}
-                    <strong>
-                      Attempt Number: {{forloop.counter}}
-                    </strong>
+                  {% if ans.answer.correct %}
+                    <i class="fa fa-check" aria-hidden="true" style="color:#27B52D"></i>
+                  {% else %}
+                  <i class="fa fa-times" aria-hidden="true" style="color:red"></i>
+                  {% endif %}
                     <div id="accordian">
                       <div class="card">
-                        {% if ans.answer.correct %}
-                          <div class="card-header">
-                            <span class="badge badge-success">
-                              Correct answer:
-                            </span>
-                            <a class="card-link" data-toggle="collapse" href="#submitted_{{ans.answer.id}}">
-                              <span class="pull-right">
-                                Details&nbsp;<i class="fa fa-toggle-down"></i>
-                              </span>
-                            </a>
-                          </div>
-                        {% else %}
-                          <div class="card-header">
-                            <span class="badge badge-danger">
-                              Error:
-                            </span>
-                            <a class="card-link" data-toggle="collapse" href="#submitted_{{ans.answer.id}}">
-                              <span class="pull-right">
-                                Details&nbsp;<i class="fa fa-toggle-down"></i>
-                              </span>
-                            </a>
-                          </div>
-                        {% endif %}
-                        <div class="collapse hide" id="submitted_{{ans.answer.id}}" data-parent="#accordion">
+<!--                        {% if ans.answer.correct %}-->
+<!--                          <div class="card-header">-->
+<!--                            <span class="badge badge-success">-->
+<!--                              Correct answer:-->
+<!--                            </span>-->
+<!--                            <a class="card-link" data-toggle="collapse" href="#submitted_{{ans.answer.id}}">-->
+<!--                              <span class="pull-right">-->
+<!--                                Details&nbsp;<i class="fa fa-toggle-down"></i>-->
+<!--                              </span>-->
+<!--                            </a>-->
+<!--                          </div>-->
+<!--                        {% else %}-->
+<!--                          <div class="card-header">-->
+<!--                            <span class="badge badge-danger">-->
+<!--                              Error:-->
+<!--                            </span>-->
+<!--                            <a class="card-link" data-toggle="collapse" href="#submitted_{{ans.answer.id}}">-->
+<!--                              <span class="pull-right">-->
+<!--                                Details&nbsp;<i class="fa fa-toggle-down"></i>-->
+<!--                              </span>-->
+<!--                            </a>-->
+<!--                          </div>-->
+<!--                        {% endif %}-->
+<!--                        <div class="collapse hide" id="submitted_{{ans.answer.id}}" data-parent="#accordion">-->
                           <div class="card-body">
                             {% with ans.error_list as err %}
                               {% for error in err %}
@@ -314,7 +281,7 @@
                               {{ ans.answer.answer.strip }}
                             {% endif %}
                           </div>
-                        </div>
+<!--                        </div>-->
                       </div>
                     </div>
                     <br>
@@ -322,22 +289,13 @@
                 </div>
               </div>
               {% endif %}
-              <br>
-              <div class="form-group">
-                <div class="col-md-2">
-                  <label class="col-form-label" for="q{{ question.id }}">Marks:</label>
-                  {% with answers|last as answer %}
-                  <input id="q{{ question.id }}" type="text" name="q{{ question.id }}_marks" size="4" class="form-control" value="{{ answer.answer.marks }}" readonly=""><br><br>
-                  {% endwith %}
-                </div>
-              </div>
               <hr/>
               {% endfor %} {# for question, answers ... #}
-              <div class="form-group">
-                <h3>Teacher comments: </h3>
-                <textarea id="comments_{{paper.question_paper.id}}" class="form-control"
-                  name="comments_{{ paper.question_paper.id }}" readonly="">{{ paper.comments }}</textarea>
-              </div>
+<!--              <div class="form-group">-->
+<!--                <h3>Teacher comments: </h3>-->
+<!--                <textarea id="comments_{{paper.question_paper.id}}" class="form-control"-->
+<!--                  name="comments_{{ paper.question_paper.id }}" readonly="">{{ paper.comments }}</textarea>-->
+<!--              </div>-->
           </div>
         </div>
       {% else %}
