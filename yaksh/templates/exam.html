@@ -19,12 +19,10 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-        <div class="col-md-6"><center>
+        <div class="col-md-4">
           <span class="time-div nav-item" id="time_left"></span>
-          </center>
         </div>
-        <div class="col-md-6">
-          <center>
+        <div class="col-md-7">
           <form id="logout" action="{% url 'yaksh:quit_quiz' paper.attempt_number module.id paper.question_paper.id course.id %}" method="post" class="ml-auto">
             {% csrf_token %}
             <span class="nav-item"><button class="btn btn-danger btn-lg" type="submit" name="quit">
@@ -35,7 +33,6 @@
               {% endif %}
             <i class="fa fa-power-off"></i></button></span>
           </form>
-            </center>
         </div>
       </div>
 <div class="container-fluid">
