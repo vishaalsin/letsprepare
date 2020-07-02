@@ -71,7 +71,7 @@ function addIntoCart(quiz_code, quiz_price, quiz_id){
     ${quiz_code}</td>
     <td> ${quiz_price} </td>
     <td style = "display:none"> ${quiz_id} </td>
-    <td> <a href ="#" class="fa fa-trash remove" data-id="${course.id}"></a> </td>
+    <td> <a href ="#" class="fa fa-trash remove" data-id="${quiz_id}"></a> </td>
 
 
     </tr>
