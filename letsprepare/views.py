@@ -141,11 +141,18 @@ def get_accuracy_graph(question_papers_attempted, answerpapers):
     qa_tups = zip(question_papers_attempted,answerpapers)
     qa_tups_ordered = [qa for qa in sorted(qa_tups, key=lambda item: item[1].end_time)]
     for qp, ap in qa_tups_ordered:
+        num_attempted = len(ap.questions_answered.all())
         if qp.quiz.quiz_code in attempt_dict.keys():
-            attempt_dict[qp.quiz.quiz_code].append(round(((ap.marks_obtained)/len(ap.questions_answered.all())*100),2))
+            if num_attempted == 0:
+                attempt_dict[qp.quiz.quiz_code].append(0)
+            else:
+                attempt_dict[qp.quiz.quiz_code].append(round(((ap.marks_obtained)/len(ap.questions_answered.all())*100),2))
         else:
             attempt_dict[qp.quiz.quiz_code] = []
-            attempt_dict[qp.quiz.quiz_code].append(round(((ap.marks_obtained)/len(ap.questions_answered.all()))*100,2))
+            if num_attempted == 0:
+                attempt_dict[qp.quiz.quiz_code].append(0)
+            else:
+                attempt_dict[qp.quiz.quiz_code].append(round(((ap.marks_obtained)/len(ap.questions_answered.all()))*100,2))
 
     fy = []
     sy = []
