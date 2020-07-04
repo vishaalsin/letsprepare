@@ -94,7 +94,7 @@ urlpatterns = [
     url(r'^manage/gradeuser/(?P<quiz_id>\d+)/(?P<user_id>\d+)/'
         '(?P<attempt_number>\d+)/(?P<course_id>\d+)/$',
         views.grade_user, name="grade_user"),
-    url(r'^manage/questions/$', views.show_all_questions,
+    url(r'^manage/questions/$', views.show_all_questions2,
         name="show_questions"),
     url(r'^manage/monitor/$', views.monitor, name="monitor"),
     url(r'^manage/monitor/(?P<quiz_id>\d+)/(?P<course_id>\d+)/$',
@@ -166,6 +166,10 @@ urlpatterns = [
         name="download_questions"),
     url(r'^manage/upload_questions/$', views.show_all_questions,
         name="upload_questions"),
+    # url(r'^manage/upload_questions/$', views.show_all_questions2,
+    #     name="upload_questions"),
+    url(r'^manage/create_modules/$', views.show_all_questions2,
+        name="create_modules"),
     url(r'^manage/regrade/paper/question/(?P<course_id>\d+)/'
         '(?P<questionpaper_id>\d+)/(?P<question_id>\d+)/$',
         views.regrade, name='regrade_by_quiz'),

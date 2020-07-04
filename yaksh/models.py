@@ -879,6 +879,7 @@ class LearningModule(models.Model):
                 type=type, quiz=unit).order
         return order
 
+
     def __str__(self):
         return self.name
 

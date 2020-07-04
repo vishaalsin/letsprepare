@@ -1,4 +1,3 @@
--r requirements-codeserver.txt
 invoke==0.21.0
 django==3.0.3
 django-taggit==1.2.0
@@ -18,3 +17,4 @@ django-celery-results==1.2.1
 djangorestframework==3.11.0
 django-cors-headers==3.1.0
 Pillow
+plotly
