@@ -168,7 +168,7 @@ urlpatterns = [
         name="upload_questions"),
     # url(r'^manage/upload_questions/$', views.show_all_questions2,
     #     name="upload_questions"),
-    url(r'^manage/create_modules/$', views.show_all_questions2,
+    url(r'^manage/create_modules/$', views.create_modules,
         name="create_modules"),
     url(r'^manage/regrade/paper/question/(?P<course_id>\d+)/'
         '(?P<questionpaper_id>\d+)/(?P<question_id>\d+)/$',
