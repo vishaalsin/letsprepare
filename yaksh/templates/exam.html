@@ -13,7 +13,12 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarColor01">
-      <div class="row ml-auto">
+    </div>
+  </nav>
+</div>
+{% endblock %}
+{% block content %}
+<div class="row">
         <div class="col-md-4">
           <span class="time-div nav-item" id="time_left"></span>
         </div>
@@ -30,13 +35,14 @@
           </form>
         </div>
       </div>
-    </div>
-  </nav>
-</div>
-{% endblock %}
-{% block content %}
 <div class="container-fluid">
   <div class="row">
+    <!-- Main Component -->
+    <div class="col-md-9">
+      <br>
+      {% block main %}
+      {% endblock %}
+    </div>
     <!-- Side Component -->
     <div class="col-md-3 bg-secondary" style="overflow-x: scroll;">
       <br>
@@ -45,7 +51,7 @@
         {{ paper.question_paper.quiz.description }}</h4>
       </center>
       <hr>
-      <center><p><b><u>Question Navigator</b></u></p></center>
+      <center><p><b><u>Question Navigator</u></b></p></center>
       <br>
       <div class="justify-content-center">
         {% for qid in paper.get_all_ordered_questions %}
@@ -110,12 +116,6 @@
           </table>
         <br>
       </div>
-    </div>
-    <!-- Main Component -->
-    <div class="col-md-9">
-      <br>
-      {% block main %}
-      {% endblock %}
     </div>
   </div>
 </div>

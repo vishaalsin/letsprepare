@@ -7,8 +7,13 @@
 {% block main %}
 
 <div class="container">
+    <center>Percentage Scores (Correct/Total)</center>
    {% autoescape off %}
   {{ plot_div }}
+  {% endautoescape %}
+    <center>Accuracy Scores (Correct/Attempted)</center>
+   {% autoescape off %}
+  {{ plot_div2 }}
   {% endautoescape %}
    <div class="card">
         <div class="card-header">
