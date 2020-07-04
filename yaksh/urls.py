@@ -192,6 +192,8 @@ urlpatterns = [
         name="download_quiz_assignment"),
     url(r'^manage/courses/download_yaml_template/',
         views.download_yaml_template, name="download_yaml_template"),
+    url(r'^manage/modules/download_template_modules/',
+        views.download_template_modules, name="download_template_modules"),
     url(r'^manage/download_sample_csv/',
         views.download_sample_csv, name="download_sample_csv"),
     url(r'^manage/courses/edit_lesson/(?P<course_id>\d+)/(?P<module_id>\d+)/$',

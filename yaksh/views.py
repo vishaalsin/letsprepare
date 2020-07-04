@@ -2800,6 +2800,22 @@ def download_yaml_template(request):
 
 @login_required
 @email_verified
+def download_template_modules(request):
+        user = request.user
+        if not is_moderator(user):
+            raise Http404('You are not allowed to view this page!')
+        csv_file_path = os.path.join(FIXTURES_DIR_PATH,
+                                     "sample_modules_upload.csv")
+        with open(csv_file_path, 'rb') as csv_file:
+            response = HttpResponse(csv_file.read(), content_type='text/csv')
+            response['Content-Disposition'] = (
+                'attachment; filename="sample_modules_upload"'
+            )
+            return response
+
+
+@login_required
+@email_verified
 def edit_lesson(request, course_id=None, module_id=None, lesson_id=None):
     user = request.user
     if not is_moderator(user):
