@@ -1,0 +1,64 @@
+{% extends "manage.html" %}
+{% load static %}
+
+{% block title %} Modules {% endblock %}
+
+{% block pagetitle %} Modules {% endblock pagetitle %}
+
+{% block script %}
+<script type="text/javascript" src="{% static 'yaksh/js/show_question.js' %}"></script>
+<script type="text/javascript" src="{% static 'yaksh/js/jquery.tablesorter.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="nav nav-pills" role="tablist" aria-orientation="vertical">
+      <a href="#updown" id="updownbar" class="nav-link" data-toggle="pill" role="tab" aria-controls="updown" aria-selected="false" > Upload Modules</a>
+    </div>
+    <br>
+    <div class="tab-content">
+      <!-- Upload Modules -->
+      <div id="updown" class="card tab-pane fade" role="tabpanel" aria-labelledby="updownbar">
+        <div class="col" role="alert">
+            <li><b><u>CSV File</u></b>
+             <p> Upload a csv below - </p>
+            </li>
+        </div>
+        <div class="card-body">
+          <form action="" method="post"  enctype="multipart/form-data">
+            {% csrf_token %}
+              <div class="form-group col-md-6">
+                  <a class="btn btn-info" href="{% url 'yaksh:download_template_modules' %}">
+                    <i class="fa fa-download"></i>&nbsp;Download Template</a>
+                  <br><br>
+                  <h4> Or </h4>
+                  <br>
+                  <div class="input-group mb-3">
+                      <div class="custom-file">
+                          {{ upload_form }}
+                          <label class="custom-file-label" for="id_file">
+                              Choose file
+                          </label>
+                      </div>
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-primary" type="submit" name="upload" value="upload"><i class="fa fa-upload"></i>&nbsp;Upload File</button>
+                      </div>
+                  </div>
+              </div>
+              <script>
+                  $('#id_file').on('change',function(){
+                      //get the file name
+                      var fileName = $(this).val();
+                      //replace the "Choose a file" label
+                      $(this).next('.custom-file-label').html(fileName);
+                  })
+              </script>
+          </form>
+        </div>
+      </div>
+      <!-- End of upload questions -->
+
+    </div>
+  </div>
+{% endblock %}
+

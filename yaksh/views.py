@@ -1,5 +1,6 @@
 import os
 import csv
+from datetime import timedelta
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, get_object_or_404, redirect
@@ -60,6 +61,7 @@ from .tasks import regrade_papers
 from notifications_plugin.models import Notification
 from plotly.offline import plot
 import plotly.graph_objs as go
+import pandas as pd
 
 
 def my_redirect(url):
@@ -1569,6 +1571,150 @@ def design_questionpaper(request, course_id, quiz_id, questionpaper_id=None):
         request, 'yaksh/design_questionpaper.html', context
     )
 
+@login_required
+@email_verified
+def create_modules(request):
+    """Show a list of all the questions currently in the database."""
+    user = request.user
+    msg = None
+    context = {}
+    if not is_moderator(user):
+        raise Http404("You are not allowed to view this page")
+    if request.method == 'POST':
+        if request.POST.get('upload') == 'upload':
+            form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                try:
+                    modules_with_questions_file = pd.read_csv(request.FILES['file'])
+                except:
+                    msg = 'Unable to upload file'
+                unique_rows_of_questions_excel_upload = modules_with_questions_file.drop_duplicates()
+                module_and_quiz_wise_grouped_questions = unique_rows_of_questions_excel_upload.groupby(['Module Name ','Module Description', 'Quiz Code']).agg(list).reset_index()
+                existing_course = Course.objects.get(id=1)
+                for i, j in module_and_quiz_wise_grouped_questions.iterrows():
+
+                    #Headers of excel file uploaded for a module
+                    module_to_create = j['Module Name ']
+                    description_module_to_create = j['Module Description']
+                    quiz_code_to_create = j['Quiz Code']
+                    questions_for_quiz = j['Question Summary']
+
+                    #Check if the module, quiz or quiz unit already exists
+                    module, module_get_or_create = get_or_create_module(module_to_create, user)
+                    quiz, quiz_get_or_create = get_or_create_quiz(quiz_code_to_create, user)
+                    quiz_unit, quiz_unit_get_or_create = get_or_create_quiz_unit(quiz)
+
+                    if quiz_unit_get_or_create == 1:
+                        module.learning_unit.add(quiz_unit)
+
+                    if module_get_or_create == 1:
+                        existing_course.learning_module.add(module)
+
+                    create_and_save_question_paper(quiz, questions_for_quiz, user)
+    upload_form = UploadFileForm()
+    context['upload_form'] = upload_form
+    messages.info(request, '')
+    return my_render_to_response(request, 'yaksh/createmodules.html', context)
+
+def get_or_create_module(module_to_create, user):
+    existing_module = LearningModule.objects.filter(
+        creator_id=user,
+        name=module_to_create)
+    if len(existing_module) > 0:
+        existing_module_as_list = (list(existing_module))
+        return existing_module_as_list[0], 0
+    else:
+        learning_module_to_create = create_learning_module(module_to_create,module_to_create, user)
+        return learning_module_to_create, 1
+
+
+def create_learning_module(description_module_to_create, module_to_create, user):
+    learning_module_to_create = LearningModule.objects.create(
+        name=module_to_create,
+        description=description_module_to_create,
+        creator=user,
+        html_data="<center>{}</center>".format(module_to_create),
+        check_prerequisite=False
+    )
+    return learning_module_to_create
+
+
+def get_or_create_quiz(quiz_code_to_create, user):
+    existing_quiz = Quiz.objects.filter(
+        description=quiz_code_to_create,
+        quiz_code=quiz_code_to_create,
+        active=True,
+        creator_id=user)
+    if len(existing_quiz) > 0:
+        existing_quiz_as_list = (list(existing_quiz))
+        return existing_quiz_as_list[0], 0
+    else:
+        quiz_to_create = create_quiz(quiz_code_to_create, user)
+        return quiz_to_create, 1
+
+
+def get_or_create_quiz_unit(quiz_to_create):
+    existing_quiz_unit = LearningUnit.objects.filter(
+        order=1,
+        type="quiz",
+        quiz=quiz_to_create,
+        check_prerequisite=False
+    )
+    if len(existing_quiz_unit) > 0:
+        existing_quiz_unit_as_list = (list(existing_quiz_unit))
+        return existing_quiz_unit_as_list[0], 0
+    else:
+        quiz_unit_to_create = LearningUnit.objects.create(
+            order=1,
+            type="quiz",
+            quiz=quiz_to_create,
+            check_prerequisite=False
+        )
+        return quiz_unit_to_create, 1
+
+
+def create_quiz(quiz_code_to_create, user):
+    quiz_to_create = Quiz.objects.create(
+        start_date_time=timezone.now(),
+        end_date_time=timezone.now() + timedelta(176590),
+        duration=20,
+        active=True,
+        attempts_allowed=2,
+        time_between_attempts=0,
+        description=quiz_code_to_create,
+        quiz_code=quiz_code_to_create,
+        pass_criteria=0,
+        creator=user,
+        instructions="<b>Demo quiz</b>"
+    )
+    return quiz_to_create
+
+
+def create_and_save_question_paper(existing_quiz, questions_for_quiz, user):
+    existing_question_paper = QuestionPaper.objects.filter(
+        quiz=existing_quiz,
+        shuffle_questions=False
+    )
+    existing_questions = Question.objects.filter(
+        active=True,
+        summary__in=questions_for_quiz,
+        user=user
+    )
+    if len(existing_question_paper) > 0:
+        existing_question_paper = list(existing_question_paper)[0]
+    else:
+        existing_question_paper = QuestionPaper.objects.create(
+            quiz=existing_quiz,
+            shuffle_questions=False
+        )
+        existing_question_paper.save()
+    q_order = [str(que.id) for que in existing_questions]
+    existing_question_paper.fixed_question_order = ",".join(q_order)
+    existing_question_paper.save()
+    existing_question_paper.fixed_questions.add(*existing_questions)
+    existing_question_paper.update_total_marks()
+    existing_question_paper.save()
+
 
 @login_required
 @email_verified
@@ -2630,6 +2776,22 @@ def download_yaml_template(request):
         'attachment; filename="questions_dump.yaml"'
     )
     return response
+
+
+@login_required
+@email_verified
+def download_template_modules(request):
+        user = request.user
+        if not is_moderator(user):
+            raise Http404('You are not allowed to view this page!')
+        csv_file_path = os.path.join(FIXTURES_DIR_PATH,
+                                     "sample_modules_upload.csv")
+        with open(csv_file_path, 'rb') as csv_file:
+            response = HttpResponse(csv_file.read(), content_type='text/csv')
+            response['Content-Disposition'] = (
+                'attachment; filename="sample_modules_upload"'
+            )
+            return response
 
 
 @login_required
