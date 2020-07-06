@@ -11,14 +11,9 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container-fluid">
-    <div class="nav nav-pills" role="tablist" aria-orientation="vertical">
-      <a href="#updown" id="updownbar" class="nav-link" data-toggle="pill" role="tab" aria-controls="updown" aria-selected="false" > Upload Modules</a>
-    </div>
-    <br>
     <div class="tab-content">
       <!-- Upload Modules -->
-      <div id="updown" class="card tab-pane fade" role="tabpanel" aria-labelledby="updownbar">
+      <div id="tab">
         <div class="col" role="alert">
             <li><b><u>CSV File</u></b>
              <p> Upload a csv below - </p>
@@ -59,6 +54,5 @@
       <!-- End of upload questions -->
 
     </div>
-  </div>
 {% endblock %}
 
