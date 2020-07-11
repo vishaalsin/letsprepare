@@ -111,14 +111,6 @@
   }
 },
 {
-  "model": "yaksh.concurrentuser",
-  "pk": 3,
-  "fields": {
-    "concurrent_user": 3,
-    "session_key": "s4iw5uwdutojr2a8bgu36x5qda1ctb69"
-  }
-},
-{
   "model": "yaksh.profile",
   "pk": 1,
   "fields": {
