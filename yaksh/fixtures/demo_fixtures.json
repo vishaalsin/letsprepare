@@ -132,18 +132,6 @@
   }
 },
 {
-  "model": "yaksh.profile",
-  "pk": 2,
-  "fields": {
-    "user": 3,
-    "roll_number": "1234",
-    "institute": "demo",
-    "department": "demo",
-    "position": "Student",
-    "timezone": "UTC"
-  }
-},
-{
   "model": "admin.logentry",
   "pk": 1,
   "fields": {
