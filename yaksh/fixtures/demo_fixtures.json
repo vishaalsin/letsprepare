@@ -95,24 +95,6 @@
   }
 },
 {
-  "model": "auth.user",
-  "pk": 3,
-  "fields": {
-    "password": "pbkdf2_sha256$24000$uvLwahv56EeP$2PVrFFhzeM+7VFwygYIg3eXRefBpaUhf+xXUuzs6w8E=",
-    "last_login": "2017-01-09T05:58:29.755Z",
-    "is_superuser": false,
-    "username": "student",
-    "first_name": "Student",
-    "last_name": "Student",
-    "email": "student@mail.com",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2017-01-09T05:57:02.954Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
   "model": "yaksh.concurrentuser",
   "pk": 1,
   "fields": {
