@@ -1,5 +1,4 @@
 from django import forms
-from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 from yaksh.models import (
     get_model_class, Profile, Quiz, Question, Course, QuestionPaper, Lesson,
