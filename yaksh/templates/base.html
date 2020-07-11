@@ -71,5 +71,77 @@
   {% endblock %}
 
 </body>
+<script>
+    sendOtpBtn=document.querySelector('#send-otp');
+    loadEventListeners();
+    function loadEventListeners(){
+    sendOtpBtn.addEventListener('click', sendOtp);}
+    function sendOtp(e){
+
+    username = $("#id_username").val().length
+    email = $("#id_email").val().length
+    password = $("#id_password").val().length
+    confirm_password = $("#id_confirm_password").val().length
+    first_name = $("#id_first_name").val().length
+    last_name = $("#id_last_name").val().length
+    country_code = $("#id_country_code").val().length
+    phone_number = $("#id_phone_number").val().length
+
+    if(username == 0 ||
+        email==0 ||
+        password==0 ||
+        confirm_password==0 ||
+        first_name==0 ||
+        last_name==0 ||
+        country_code==0 ||
+        phone_number==0
+    ) {
+    alert("Fill all the below fields.");
+    return;}
+
+    country_code = $("#id_country_code").val()
+    phone_number = $("#id_phone_number").val()
+    student_number = "+".concat(country_code.split("-")[1]).concat(phone_number)
+
+    submitData = {'number' : student_number}
+
+    $.post("/letsprepare/send_otp/",
+  {
+    data: JSON.stringify(submitData)
+  },
+  function(data){
+    key = Object.keys(data)[0]
+    value = Object.values(data)[0]
+    if (key == "SENT"){
+
+    if ($.trim($("#send-otp").text()) == "Resend OTP"){
+      $("#send-otp").attr("style", "visibility: hidden")
+    }
+    if ($.trim($("#send-otp").text()) ==  "Get OTP"){
+      $("#send-otp").text("Resend OTP");
+    }
+
+        var i = 2;
+        while(i > 0) {
+            var otp = window. prompt("Please enter OTP sent to your mobile number: ");
+            if(value == otp) {
+               i = -1
+               $("#submit-form").click();
+            }
+            else {
+            alert("Incorrect OTP!!");
+                i = i-1;
+
+            if (i==0 && $("#send-otp").css("visibility")=="hidden"){
+            window.location.href = "/";
+            }
+        }
+    }}
+    else {
+    alert("Please enter a valid mobile number.");}
+  });
+
+}
+</script>
 </html>
 

@@ -12,6 +12,13 @@ from letsprepare.serializers import AvailableQuizzesSerializer, ErrorSerializer
 import json
 from plotly.offline import plot
 import plotly.graph_objs as go
+from twilio.rest import Client
+from random import randint
+
+
+sid = 'AC7e82d08cd30894c9095a736ce2ad86d6'
+token = '1bfe2294a4056ddbbff0c9874acfceed'
+client = Client(sid, token)
 
 @login_required
 @has_profile
@@ -251,4 +258,23 @@ def report_error(request):
         return JsonResponse({'SUCCESS': 'Thanks for buying!!'}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
-        return JsonResponse(str(e), status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'error' : str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+def send_otp(request):
+    data = json.loads(request.POST['data'])
+    number = data['number']
+    otp = randint(111111,999999)
+    try:
+        message = client.messages.create(
+        body='Hi there! Your OTP to register on letsprepare is : ' + str(otp),
+        from_='+12137252282',
+        to=number
+        )
+        return JsonResponse({'SENT': otp})
+    except Exception as e:
+        return JsonResponse({'NUMBER NOT VALID' : str(e)})
+
+
+def index(request):
+    return my_render_to_response(request, "index.html")

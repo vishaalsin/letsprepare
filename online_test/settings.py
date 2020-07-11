@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'online_test.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'new10',
+        'NAME': 'new',
         'USER': 'vishaal',
         'PASSWORD': 'password',
         'HOST': 'localhost',

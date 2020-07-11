@@ -1,4 +1,6 @@
 from django import forms
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
+
 from yaksh.models import (
     get_model_class, Profile, Quiz, Question, Course, QuestionPaper, Lesson,
     LearningModule, TestCase, languages, question_types, Post, Comment
@@ -30,6 +32,221 @@ test_case_types = (
     ("stringtestcase", "String Testcase"),
     ("floattestcase", "Float Testcase"),
 )
+
+country_codes = (("DZ-213","Algeria (+213)")
+,("AD-376","Andorra (+376)")
+,("AO-244","Angola (+244)")
+,("AI-1264","Anguilla (+1264)")
+,("AG-1268","Antigua &amp; Barbuda (+1268)")
+,("AR-54","Argentina (+54)")
+,("AM-374","Armenia (+374)")
+,("AW-297","Aruba (+297)")
+,("AU-61","Australia (+61)")
+,("AT-43","Austria (+43)")
+,("AZ-994","Azerbaijan (+994)")
+,("BS-1242","Bahamas (+1242)")
+,("BH-973","Bahrain (+973)")
+,("BD-880","Bangladesh (+880)")
+,("BB-1246","Barbados (+1246)")
+,("BY-375","Belarus (+375)")
+,("BE-32","Belgium (+32)")
+,("BZ-501","Belize (+501)")
+,("BJ-229","Benin (+229)")
+,("BM-1441","Bermuda (+1441)")
+,("BT-975","Bhutan (+975)")
+,("BO-591","Bolivia (+591)")
+,("BA-387","Bosnia Herzegovina (+387)")
+,("BW-267","Botswana (+267)")
+,("BR-55","Brazil (+55)")
+,("BN-673","Brunei (+673)")
+,("BG-359","Bulgaria (+359)")
+,("BF-226","Burkina Faso (+226)")
+,("BI-257","Burundi (+257)")
+,("KH-855","Cambodia (+855)")
+,("CM-237","Cameroon (+237)")
+,("CA-1","Canada (+1)")
+,("CV-238","Cape Verde Islands (+238)")
+,("KY-1345","Cayman Islands (+1345)")
+,("CF-236","Central African Republic (+236)")
+,("CL-56","Chile (+56)")
+,("CN-86","China (+86)")
+,("CO-57","Colombia (+57)")
+,("KM-269","Comoros (+269)")
+,("CG-242","Congo (+242)")
+,("CK-682","Cook Islands (+682)")
+,("CR-506","Costa Rica (+506)")
+,("HR-385","Croatia (+385)")
+,("CU-53","Cuba (+53)")
+,("CY-90392","Cyprus North (+90392)")
+,("CY-357","Cyprus South (+357)")
+,("CZ-42","Czech Republic (+42)")
+,("DK-45","Denmark (+45)")
+,("DJ-253","Djibouti (+253)")
+,("DM-1809","Dominica (+1809)")
+,("DO-1809","Dominican Republic (+1809)")
+,("EC-593","Ecuador (+593)")
+,("EG-20","Egypt (+20)")
+,("SV-503","El Salvador (+503)")
+,("GQ-240","Equatorial Guinea (+240)")
+,("ER-291","Eritrea (+291)")
+,("EE-372","Estonia (+372)")
+,("ET-251","Ethiopia (+251)")
+,("FK-500","Falkland Islands (+500)")
+,("FO-298","Faroe Islands (+298)")
+,("FJ-679","Fiji (+679)")
+,("FI-358","Finland (+358)")
+,("FR-33","France (+33)")
+,("GF-594","French Guiana (+594)")
+,("PF-689","French Polynesia (+689)")
+,("GA-241","Gabon (+241)")
+,("GM-220","Gambia (+220)")
+,("GE-7880","Georgia (+7880)")
+,("DE-49","Germany (+49)")
+,("GH-233","Ghana (+233)")
+,("GI-350","Gibraltar (+350)")
+,("GR-30","Greece (+30)")
+,("GL-299","Greenland (+299)")
+,("GD-1473","Grenada (+1473)")
+,("GP-590","Guadeloupe (+590)")
+,("GU-671","Guam (+671)")
+,("GT-502","Guatemala (+502)")
+,("GN-224","Guinea (+224)")
+,("GW-245","Guinea - Bissau (+245)")
+,("GY-592","Guyana (+592)")
+,("HT-509","Haiti (+509)")
+,("HN-504","Honduras (+504)")
+,("HK-852","Hong Kong (+852)")
+,("HU-36","Hungary (+36)")
+,("IS-354","Iceland (+354)")
+,("IN-91","India (+91)")
+,("ID-62","Indonesia (+62)")
+,("IR-98","Iran (+98)")
+,("IQ-964","Iraq (+964)")
+,("IE-353","Ireland (+353)")
+,("IL-972","Israel (+972)")
+,("IT-39","Italy (+39)")
+,("JM-1876","Jamaica (+1876)")
+,("JP-81","Japan (+81)")
+,("JO-962","Jordan (+962)")
+,("KZ-7","Kazakhstan (+7)")
+,("KE-254","Kenya (+254)")
+,("KI-686","Kiribati (+686)")
+,("KP-850","Korea North (+850)")
+,("KR-82","Korea South (+82)")
+,("KW-965","Kuwait (+965)")
+,("KG-996","Kyrgyzstan (+996)")
+,("LA-856","Laos (+856)")
+,("LV-371","Latvia (+371)")
+,("LB-961","Lebanon (+961)")
+,("LS-266","Lesotho (+266)")
+,("LR-231","Liberia (+231)")
+,("LY-218","Libya (+218)")
+,("LI-417","Liechtenstein (+417)")
+,("LT-370","Lithuania (+370)")
+,("LU-352","Luxembourg (+352)")
+,("MO-853","Macao (+853)")
+,("MK-389","Macedonia (+389)")
+,("MG-261","Madagascar (+261)")
+,("MW-265","Malawi (+265)")
+,("MY-60","Malaysia (+60)")
+,("MV-960","Maldives (+960)")
+,("ML-223","Mali (+223)")
+,("MT-356","Malta (+356)")
+,("MH-692","Marshall Islands (+692)")
+,("MQ-596","Martinique (+596)")
+,("MR-222","Mauritania (+222)")
+,("YT-269","Mayotte (+269)")
+,("MX-52","Mexico (+52)")
+,("FM-691","Micronesia (+691)")
+,("MD-373","Moldova (+373)")
+,("MC-377","Monaco (+377)")
+,("MN-976","Mongolia (+976)")
+,("MS-1664","Montserrat (+1664)")
+,("MA-212","Morocco (+212)")
+,("MZ-258","Mozambique (+258)")
+,("MN-95","Myanmar (+95)")
+,("NA-264","Namibia (+264)")
+,("NR-674","Nauru (+674)")
+,("NP-977","Nepal (+977)")
+,("NL-31","Netherlands (+31)")
+,("NC-687","New Caledonia (+687)")
+,("NZ-64","New Zealand (+64)")
+,("NI-505","Nicaragua (+505)")
+,("NE-227","Niger (+227)")
+,("NG-234","Nigeria (+234)")
+,("NU-683","Niue (+683)")
+,("NF-672","Norfolk Islands (+672)")
+,("NP-670","Northern Marianas (+670)")
+,("NO-47","Norway (+47)")
+,("OM-968","Oman (+968)")
+,("PW-680","Palau (+680)")
+,("PA-507","Panama (+507)")
+,("PG-675","Papua New Guinea (+675)")
+,("PY-595","Paraguay (+595)")
+,("PE-51","Peru (+51)")
+,("PH-63","Philippines (+63)")
+,("PL-48","Poland (+48)")
+,("PT-351","Portugal (+351)")
+,("PR-1787","Puerto Rico (+1787)")
+,("QA-974","Qatar (+974)")
+,("RE-262","Reunion (+262)")
+,("RO-40","Romania (+40)")
+,("RU-7","Russia (+7)")
+,("RW-250","Rwanda (+250)")
+,("SM-378","San Marino (+378)")
+,("ST-239","Sao Tome &amp; Principe (+239)")
+,("SA-966","Saudi Arabia (+966)")
+,("SN-221","Senegal (+221)")
+,("CS-381","Serbia (+381)")
+,("SC-248","Seychelles (+248)")
+,("SL-232","Sierra Leone (+232)")
+,("SG-65","Singapore (+65)")
+,("SK-421","Slovak Republic (+421)")
+,("SI-386","Slovenia (+386)")
+,("SB-677","Solomon Islands (+677)")
+,("SO-252","Somalia (+252)")
+,("ZA-27","South Africa (+27)")
+,("ES-34","Spain (+34)")
+,("LK-94","Sri Lanka (+94)")
+,("SH-290","St. Helena (+290)")
+,("KN-1869","St. Kitts (+1869)")
+,("SC-1758","St. Lucia (+1758)")
+,("SD-249","Sudan (+249)")
+,("SR-597","Suriname (+597)")
+,("SZ-268","Swaziland (+268)")
+,("SE-46","Sweden (+46)")
+,("CH-41","Switzerland (+41)")
+,("SI-963","Syria (+963)")
+,("TW-886","Taiwan (+886)")
+,("TJ-7","Tajikstan (+7)")
+,("TH-66","Thailand (+66)")
+,("TG-228","Togo (+228)")
+,("TO-676","Tonga (+676)")
+,("TT-1868","Trinidad &amp; Tobago (+1868)")
+,("TN-216","Tunisia (+216)")
+,("TR-90","Turkey (+90)")
+,("TM-7","Turkmenistan (+7)")
+,("TM-993","Turkmenistan (+993)")
+,("TC-1649","Turks &amp; Caicos Islands (+1649)")
+,("TV-688","Tuvalu (+688)")
+,("UG-256","Uganda (+256)")
+,("GB-44","UK (+44)")
+,("UA-380","Ukraine (+380)")
+,("AE-971","United Arab Emirates (+971)")
+,("UY-598","Uruguay (+598)")
+,("US-1","USA (+1)")
+,("UZ-7","Uzbekistan (+7)")
+,("VU-678","Vanuatu (+678)")
+,("VA-379","Vatican City (+379)")
+,("VE-58","Venezuela (+58)")
+,("VN-84","Vietnam (+84)")
+,("VG-84","Virgin Islands - British (+1284)")
+,("VI-84","Virgin Islands - US (+1340)")
+,("WF-681","Wallis &amp; Futuna (+681)")
+,("YE-969","Yemen (North)(+969)")
+,("YE-967","Yemen (South)(+967)")
+,("ZM-260","Zambia (+260)")
+,("ZW-263","Zimbabwe (+263)"))
 
 status_types = (
     ('select', 'Select Status'),
@@ -64,10 +281,9 @@ class UserRegisterForm(forms.Form):
     a new user to the system"""
 
     username = forms.CharField(
-        max_length=30, help_text='Letters, digits,\
-                period and underscores only.',
+        max_length=30,
         widget=forms.TextInput(
-            {'class': form_input_class, 'placeholder': "Username"})
+            {'class': form_input_class, 'placeholder': "Username : Letters, digits, period and underscores only."})
         )
     email = forms.EmailField(widget=forms.TextInput(
         {'class': form_input_class, 'placeholder': "Email"}
@@ -85,6 +301,10 @@ class UserRegisterForm(forms.Form):
         ))
     last_name = forms.CharField(max_length=30, widget=forms.TextInput(
         {'class': form_input_class, 'placeholder': "Last Name"}
+        ))
+    country_code = forms.ChoiceField(choices=country_codes, initial="IN-91", required = True, widget=forms.Select(attrs={"class": "form-control", 'placeholder': "country code"}))
+    phone_number = forms.CharField(max_length=10, widget=forms.TextInput(
+        {'class': form_input_class, 'placeholder': "Phone Number"}
         ))
     # roll_number = forms.CharField(
     #     max_length=30, help_text="Use a dummy if you don't have one.",
@@ -146,24 +366,34 @@ class UserRegisterForm(forms.Form):
             raise forms.ValidationError("This email already exists")
         return user_email
 
+    def clean_phone_number(self):
+        user_phone_number = self.cleaned_data['phone_number']
+        if Profile.objects.filter(phone_number=user_phone_number).exists():
+            raise forms.ValidationError("This phone number already exists")
+        return user_phone_number
+
+    def clean_country_code(self):
+        user_country_code = self.cleaned_data['country_code']
+        user_country_code = '+' + user_country_code.split('-')[1]
+        return user_country_code
+
     def save(self):
         u_name = self.cleaned_data["username"]
         u_name = u_name.lower()
         pwd = self.cleaned_data["password"]
         email = self.cleaned_data['email']
+        country_code = self.cleaned_data['country_code']
+        phone_number = self.cleaned_data['phone_number']
         new_user = User.objects.create_user(u_name, email, pwd)
 
         new_user.first_name = self.cleaned_data["first_name"]
         new_user.last_name = self.cleaned_data["last_name"]
         new_user.save()
 
-        cleaned_data = self.cleaned_data
         new_profile = Profile(user=new_user)
-        # new_profile.roll_number = cleaned_data["roll_number"]
-        # new_profile.institute = cleaned_data["institute"]
-        # new_profile.department = cleaned_data["department"]
-        # new_profile.position = cleaned_data["position"]
-        # new_profile.timezone = cleaned_data["timezone"]
+        new_profile.country_code = country_code
+        new_profile.phone_number = phone_number
+
         if settings.IS_DEVELOPMENT:
             new_profile.is_email_verified = True
         else:
