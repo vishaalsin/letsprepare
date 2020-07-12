@@ -29,6 +29,7 @@ def show_all_quizzes(request):
     availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
     module = LearningModule.objects.get(id = id)
     quizzes = module.get_quiz_units()
+    quizzes = sorted(quizzes, key=lambda item: int(item.quiz_code.split('_')[1]))
     answerpapers = AnswerPaper.objects.filter(user=request.user)
     question_papers_attempted = [i.question_paper.id for i in answerpapers]
     question_papers_data = []
