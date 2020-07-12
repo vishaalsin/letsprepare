@@ -464,7 +464,7 @@ class Quiz(models.Model):
     price = models.IntegerField(default=100)
 
 
-    quiz_code = models.CharField(max_length=256, default='QUIZCODE')
+    quiz_code = models.CharField(max_length=256, unique=True)
 
     # Is the quiz active. The admin should deactivate the quiz once it is
     # complete.

@@ -1,0 +1,9 @@
+module_name,module_description,quiz_description,quiz_code,quiz_duration,price,is_free,summary
+Medieval history,Medieval history,Akbar,MEDH_9,20,100,FALSE,Akbar1
+Medieval history,Medieval history,Akbar,MEDH_9,20,100,FALSE,Akbar2
+Medieval history,Medieval history,EIC,MEDH_10,20,100,FALSE,EIC1
+Medieval history,Medieval history,EIC,MEDH_10,20,100,FALSE,EIC2
+Modern History,Modern History,1757,MODH_9,20,100,FALSE,FSI1
+Modern History,Modern History,1757,MODH_9,20,100,FALSE,FSI2
+Modern History,Modern History,Gandhiji,MODH_10,20,100,FALSE,GANDHI1
+Modern History,Modern History,Gandhiji,MODH_10,20,100,FALSE,GANDHI2

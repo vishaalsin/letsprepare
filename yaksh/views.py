@@ -1576,7 +1576,6 @@ def design_questionpaper(request, course_id, quiz_id, questionpaper_id=None):
 def create_modules(request):
     """Show a list of all the questions currently in the database."""
     user = request.user
-    msg = None
     context = {}
     if not is_moderator(user):
         raise Http404("You are not allowed to view this page")
@@ -1586,37 +1585,44 @@ def create_modules(request):
             if form.is_valid():
                 try:
                     modules_with_questions_file = pd.read_csv(request.FILES['file'])
+                    unique_rows_of_questions_excel_upload = modules_with_questions_file.drop_duplicates()
+                    module_and_quiz_wise_grouped_questions = unique_rows_of_questions_excel_upload.groupby(['module_name',	'module_description',	'quiz_description',	'quiz_code',	'quiz_duration',	'price',	'is_free']).agg(list).reset_index()
+                    existing_course = Course.objects.get(id=1)
+                    for i, j in module_and_quiz_wise_grouped_questions.iterrows():
+
+                        #Headers of excel file uploaded for a module
+                        module_to_create = j['module_name']
+                        description_module_to_create = j['module_description']
+                        quiz_description = j['quiz_description']
+                        quiz_code = j['quiz_code']
+                        quiz_duration = j['quiz_duration']
+                        price = j['price']
+                        is_free = j['is_free']
+                        questions_for_quiz = j['summary']
+
+                        #Check if the module, quiz or quiz unit already exists
+                        module, module_get_or_create = get_or_create_module(module_to_create, description_module_to_create, user)
+                        quiz, quiz_get_or_create = get_or_create_quiz(quiz_description, quiz_code, quiz_duration, price, is_free, user)
+                        quiz_unit, quiz_unit_get_or_create = get_or_create_quiz_unit(quiz)
+
+                        if quiz_unit_get_or_create == 1:
+                            module.learning_unit.add(quiz_unit)
+
+                        if module_get_or_create == 1:
+                            existing_course.learning_module.add(module)
+
+                        create_and_save_question_paper(quiz, questions_for_quiz, user)
+                        msg = "Modules created successfully."
+                        return prof_manage(request, msg)
                 except:
                     msg = 'Unable to upload file'
-                unique_rows_of_questions_excel_upload = modules_with_questions_file.drop_duplicates()
-                module_and_quiz_wise_grouped_questions = unique_rows_of_questions_excel_upload.groupby(['Module Name ','Module Description', 'Quiz Code']).agg(list).reset_index()
-                existing_course = Course.objects.get(id=1)
-                for i, j in module_and_quiz_wise_grouped_questions.iterrows():
-
-                    #Headers of excel file uploaded for a module
-                    module_to_create = j['Module Name ']
-                    description_module_to_create = j['Module Description']
-                    quiz_code_to_create = j['Quiz Code']
-                    questions_for_quiz = j['Question Summary']
-
-                    #Check if the module, quiz or quiz unit already exists
-                    module, module_get_or_create = get_or_create_module(module_to_create, user)
-                    quiz, quiz_get_or_create = get_or_create_quiz(quiz_code_to_create, user)
-                    quiz_unit, quiz_unit_get_or_create = get_or_create_quiz_unit(quiz)
-
-                    if quiz_unit_get_or_create == 1:
-                        module.learning_unit.add(quiz_unit)
-
-                    if module_get_or_create == 1:
-                        existing_course.learning_module.add(module)
-
-                    create_and_save_question_paper(quiz, questions_for_quiz, user)
+                    prof_manage(request, msg)
     upload_form = UploadFileForm()
     context['upload_form'] = upload_form
     messages.info(request, '')
     return my_render_to_response(request, 'yaksh/createmodules.html', context)
 
-def get_or_create_module(module_to_create, user):
+def get_or_create_module(module_to_create, description_module_to_create, user):
     existing_module = LearningModule.objects.filter(
         creator_id=user,
         name=module_to_create)
@@ -1624,7 +1630,7 @@ def get_or_create_module(module_to_create, user):
         existing_module_as_list = (list(existing_module))
         return existing_module_as_list[0], 0
     else:
-        learning_module_to_create = create_learning_module(module_to_create,module_to_create, user)
+        learning_module_to_create = create_learning_module(description_module_to_create,module_to_create, user)
         return learning_module_to_create, 1
 
 
@@ -1639,17 +1645,16 @@ def create_learning_module(description_module_to_create, module_to_create, user)
     return learning_module_to_create
 
 
-def get_or_create_quiz(quiz_code_to_create, user):
+def get_or_create_quiz(quiz_description, quiz_code, quiz_duration, price, is_free, user):
     existing_quiz = Quiz.objects.filter(
-        description=quiz_code_to_create,
-        quiz_code=quiz_code_to_create,
+        quiz_code=quiz_code,
         active=True,
         creator_id=user)
     if len(existing_quiz) > 0:
         existing_quiz_as_list = (list(existing_quiz))
         return existing_quiz_as_list[0], 0
     else:
-        quiz_to_create = create_quiz(quiz_code_to_create, user)
+        quiz_to_create = create_quiz(quiz_description, quiz_code, quiz_duration, price, is_free, user)
         return quiz_to_create, 1
 
 
@@ -1673,16 +1678,18 @@ def get_or_create_quiz_unit(quiz_to_create):
         return quiz_unit_to_create, 1
 
 
-def create_quiz(quiz_code_to_create, user):
+def create_quiz(quiz_description, quiz_code, quiz_duration, price, is_free, user):
     quiz_to_create = Quiz.objects.create(
         start_date_time=timezone.now(),
         end_date_time=timezone.now() + timedelta(176590),
-        duration=20,
+        duration=quiz_duration,
+        is_free=True if is_free=='True' else False,
         active=True,
         attempts_allowed=2,
         time_between_attempts=0,
-        description=quiz_code_to_create,
-        quiz_code=quiz_code_to_create,
+        description=quiz_description,
+        quiz_code=quiz_code,
+        price=price,
         pass_criteria=0,
         creator=user,
         instructions="<b>Demo quiz</b>"
@@ -2785,7 +2792,7 @@ def download_template_modules(request):
         if not is_moderator(user):
             raise Http404('You are not allowed to view this page!')
         csv_file_path = os.path.join(FIXTURES_DIR_PATH,
-                                     "sample_modules_upload.csv")
+                                     "create_modules.csv")
         with open(csv_file_path, 'rb') as csv_file:
             response = HttpResponse(csv_file.read(), content_type='text/csv')
             response['Content-Disposition'] = (

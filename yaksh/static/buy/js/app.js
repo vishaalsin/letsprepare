@@ -58,7 +58,7 @@ function buycourse(e){
 
 
 //    getCourseInfo(course);
-
+    alert("Quizzes Added!!")
     }
 }
 
