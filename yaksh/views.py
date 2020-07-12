@@ -1612,8 +1612,8 @@ def create_modules(request):
                             existing_course.learning_module.add(module)
 
                         create_and_save_question_paper(quiz, questions_for_quiz, user)
-                        msg = "Modules created successfully."
-                        return prof_manage(request, msg)
+                    msg = "Modules created successfully."
+                    return prof_manage(request, msg)
                 except:
                     msg = 'Unable to upload file'
                     prof_manage(request, msg)
