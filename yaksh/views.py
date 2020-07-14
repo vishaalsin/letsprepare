@@ -49,7 +49,7 @@ from yaksh.forms import (
     QuestionFilterForm, CourseForm, ProfileForm,
     UploadFileForm, FileForm, QuestionPaperForm, LessonForm,
     LessonFileForm, LearningModuleForm, ExerciseForm, TestcaseForm,
-    SearchFilterForm, PostForm, CommentForm
+    SearchFilterForm, PostForm, CommentForm, ContactForm
 )
 from yaksh.settings import SERVER_POOL_PORT, SERVER_HOST_NAME
 from .settings import URL_ROOT
@@ -189,6 +189,11 @@ def user_logout(request):
     logout(request)
     context = {'message': "You have been logged out successfully"}
     return my_render_to_response(request, 'yaksh/complete.html', context)
+
+
+def contact_us(request):
+    form_class = ContactForm
+    return my_render_to_response(request, 'yaksh/contact_us.html', {'form': form_class})
 
 
 @login_required

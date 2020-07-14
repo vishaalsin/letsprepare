@@ -1,0 +1,536 @@
+---
+summary: |-
+  Find the value of n
+type: |-
+  integer
+language: |-
+  python
+description: |-
+  Write the value of <i>n</i> for the following equation -
+  $$\ 3  = \frac{n^2}{3}$$
+points: 1.0
+testcase:
+- test_case_type: |-
+    integertestcase
+  correct: 3
+- test_case_type: |-
+    integertestcase
+  correct: -3
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: false
+snippet: ''
+solution: ''
+tags:
+- python
+- integer
+- demo
+- n
+- value
+---
+summary: |-
+  Print Output in Python2.x
+type: |-
+  string
+language: |-
+  python
+description: |-
+  What is the output for the following code in <b>Python 2.x</b>:
+  <br>
+  <code>
+  print("Hello"*2)
+  </code>
+points: 1.0
+testcase:
+- string_check: |-
+    exact
+  test_case_type: |-
+    stringtestcase
+  correct: |-
+    HelloHello
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: false
+snippet: ''
+solution: ''
+tags:
+- python
+- demo
+- case_sensitive
+- string
+- python2
+- casesensitive
+- '1'
+- print
+---
+summary: |-
+  Adding decimals
+type: |-
+  float
+language: |-
+  python
+description: |-
+  Write down the resultant value of the following -
+  <pre>1.1+2.2
+  </pre><br/>
+points: 1.0
+testcase:
+- error_margin: 0.0
+  test_case_type: |-
+    floattestcase
+  correct: 3.3
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: false
+snippet: ''
+solution: ''
+tags:
+- '1'
+- decimal
+- demo
+- float
+- python
+---
+summary: |-
+  Check Palindrome
+type: |-
+  code
+language: |-
+  python
+description: |-
+  Write a function <code>is_palindrome(arg)</code> which will take one string argument.
+  <br>
+  Return True if the argument is palindrome & False otherwise.
+   <br>
+  The function should be case sensitive.
+  <br><br>
+  For Example:<br><code>is_palindrome("Hello")</code> should return <code>False</code><br>
+points: 2.0
+testcase:
+- test_case_args: ''
+  test_case_type: |-
+    standardtestcase
+  weight: 1.0
+  test_case: |-
+    assert is_palindrome("hello") == False
+- test_case_args: ''
+  test_case_type: |-
+    standardtestcase
+  weight: 1.0
+  test_case: |-
+    assert is_palindrome("nitin") == True
+- test_case_args: ''
+  test_case_type: |-
+    standardtestcase
+  weight: 1.0
+  test_case: |-
+    assert is_palindrome("madaM") == False
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: false
+snippet: |-
+  def is_palindrome(s):
+solution: ''
+tags:
+- python
+- demo
+- code
+- '2'
+- palindrome
+- assertion
+- reverse
+---
+summary: |-
+  For Loop over String
+type: |-
+  code
+language: |-
+  python
+description: |-
+  Write a python script that accepts a <b>string</b> as input
+  <br>
+  The script must print each character of the string using a for loop.
+  
+  For example;
+  <pre>
+  <b>Input:</b>
+  box
+  <b>Output</b>
+  b
+  o
+  x
+  </pre>
+points: 1.0
+testcase:
+- expected_input: |-
+    string
+  expected_output: |-
+    s
+    t
+    r
+    i
+    n
+    g
+  test_case_type: |-
+    stdiobasedtestcase
+  weight: 1
+- expected_input: |-
+    s t o p s i g n
+  expected_output: |-
+    s
+     
+    t
+     
+    o
+     
+    p
+     
+    s
+     
+    i
+     
+    g
+     
+    n
+  test_case_type: |-
+    stdiobasedtestcase
+  weight: 1
+- hook_code: |-
+    def check_answer(user_answer):
+        ''' Evaluates user answer to return -
+        success - Boolean, indicating if code was executed correctly
+        mark_fraction - Float, indicating fraction of the
+                      weight to a test case
+        error - String, error message if success is false
+    
+        In case of assignment upload there will be no user answer '''
+    
+        success = False
+        err = "You are using while in your code."
+        mark_fraction = 0.0
+    
+        if not 'while' in user_answer:
+            success=True
+            err = "Correct Answer"
+            mark_fraction = 1.0
+        return success, err, mark_fraction
+  test_case_type: |-
+    hooktestcase
+  weight: 1.0
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: true
+snippet: ''
+solution: ''
+tags:
+- python
+- demo
+- '1'
+- code
+- stdio
+- for
+---
+summary: |-
+  Add 3 numbers
+type: |-
+  code
+language: |-
+  c
+description: |-
+  Write a program to add 3 numbers. 
+  <br>
+  Function Name is to be called <b>add</b>
+  <br>
+  <br><br>
+  <pre>
+  <b>Note:</b><i> You do not have to print anything, neither you have to make the function call. 
+  Just define the function to perform the required operation, return the output & click on check answer.
+  Also, note that the function name should exactly be as mentioned above.</i>
+  </pre>
+points: 2.0
+testcase:
+- test_case_args: ''
+  test_case_type: |-
+    standardtestcase
+  weight: 1.0
+  test_case: |-
+    #include <stdio.h>
+    #include <stdlib.h>
+
+    extern int add(int, int, int);
+
+    template <class T>
+    void check(T expect,T result)
+    {
+        if (expect == result)
+        {
+      printf("\nCorrect:\n Expected %d got %d \n",expect,result);
+        }
+        else 
+        {
+      printf("\nIncorrect:\n Expected %d got %d \n",expect,result);
+      exit (1);
+       }
+    }
+
+    int main(void)
+    {
+      int result;
+      result = add(0,0,0);
+            printf("Input submitted to the function: 0, 0, 0");
+      check(0, result);
+      result = add(2,3,3);
+            printf("Input submitted to the function: 2, 3, 3");
+      check(8,result);
+      printf("All Correct\n");
+    }
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: false
+snippet: ''
+solution: ''
+tags:
+- demo
+- code
+- '2'
+- c
+- addition
+- c++
+- numbers
+- cpp
+---
+summary: |-
+  Hello World in File
+type: |-
+  upload
+language: |-
+  python
+description: |-
+  Upload a file called <code>new.txt</code> which contains the string <code>Hello, World!</code>  in it.
+points: 1.0
+testcase:
+- hook_code: |-
+    def check_answer(user_answer):
+        ''' Evaluates user answer to return -
+        success - Boolean, indicating if code was executed correctly
+        mark_fraction - Float, indicating fraction of the
+                      weight to a test case
+        error - String, error message if success is false
+
+        In case of assignment upload there will be no user answer '''
+
+        success = False
+        err = "Incorrect Answer" # Please make this more specific
+        mark_fraction = 0.0
+
+        try:
+            with open('new.txt', 'r') as f:
+                if "Hello, World!" in f.read():
+                    success = True
+                    err = "Correct Answer"
+                    mark_fraction = 1.0
+                else:
+                    err = "Did not found string Hello, World! in file."
+        except IOError:
+            err = "File new.txt not found."
+        return success, err, mark_fraction
+  test_case_type: |-
+    hooktestcase
+  weight: 1.0
+active: true
+files: []
+grade_assignment_upload: true
+min_time: 0
+partial_grading: false
+snippet: ''
+solution: ''
+tags:
+- file
+- hook
+- assignment
+- python
+- demo
+- world
+- '1'
+- hello
+- upload
+- grade
+---
+summary: |-
+  Reverse a string
+type: |-
+  mcc
+language: |-
+  python
+description: |-
+  Which of the following options would reverse the string?
+points: 2.0
+testcase:
+- test_case_type: |-
+    mcqtestcase
+  options: |-
+    s.reverse()
+  correct: false
+- test_case_type: |-
+    mcqtestcase
+  options: |-
+    s[::-1]
+  correct: true
+- test_case_type: |-
+    mcqtestcase
+  options: |-
+    reversed(s)
+  correct: false
+- test_case_type: |-
+    mcqtestcase
+  options: |-
+    "''.join(reversed(s))
+  correct: true
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: false
+snippet: ''
+solution: ''
+tags:
+- '2'
+- python
+- demo
+- reverse
+- mcc
+---
+summary: |-
+  Arrange code to convert km to miles
+type: |-
+  arrange
+language: |-
+  python
+description: |-
+  Arrange the following code such that it takes a value in <b>kilometers </b> as input and prints the value in <b>miles</b> -
+points: 1.0
+testcase:
+- test_case_type: |-
+    arrangetestcase
+  options: |-
+    kilometers, conv_fac = input("Enter value in kilometers: "), 0.621371
+- test_case_type: |-
+    arrangetestcase
+  options: |-
+    miles = kilometers * conv_fac
+- test_case_type: |-
+    arrangetestcase
+  options: |-
+    print('%0.3f kilometers is equal to %0.3f miles' %(kilometers,miles))
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: false
+snippet: ''
+solution: ''
+tags:
+- arrange
+- '1'
+- python
+- sum
+---
+summary: |-
+  Print Hello, World!
+type: |-
+  code
+language: |-
+  bash
+description: |-
+  Write a bash script to print <code>Hello, World!</code> -
+points: 1.0
+testcase:
+- expected_input: ''
+  expected_output: |-
+    Hello, World!
+  test_case_type: |-
+    stdiobasedtestcase
+  weight: 1
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: false
+snippet: ''
+solution: ''
+tags:
+- world
+- '1'
+- easy
+- echo
+- bash
+- hello
+---
+summary: |-
+  Square of two numbers
+type: |-
+  code
+language: |-
+  java
+description: |-
+  Write a Java code which will take an <b>integer as input</b> and <b>print the square</b> of the integer -
+points: 1.0
+testcase:
+- expected_input: |-
+    2
+  expected_output: |-
+    4
+  test_case_type: |-
+    stdiobasedtestcase
+  weight: 1
+- expected_input: |-
+    4
+  expected_output: |-
+    16
+  test_case_type: |-
+    stdiobasedtestcase
+  weight: 1
+- expected_input: |-
+    0
+  expected_output: |-
+    0
+  test_case_type: |-
+    stdiobasedtestcase
+  weight: 1
+- expected_input: |-
+    -3
+  expected_output: |-
+    9
+  test_case_type: |-
+    stdiobasedtestcase
+  weight: 1
+active: true
+files: []
+grade_assignment_upload: false
+min_time: 0
+partial_grading: true
+snippet: |-
+  import java.util.Scanner;
+  class Test{
+  public static void main(String args[]){
+  // Write your code here
+  }
+  }
+solution: ''
+tags:
+- '1'
+- easy
+- square
+- java
