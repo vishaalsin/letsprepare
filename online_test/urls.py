@@ -11,7 +11,6 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', admin.site.urls),
-    url(r'^.well-known/', views.return_cert, name = 'cert'),
     url(r'^$', views.index, name='index'),
     url(r'^exam/', include(('yaksh.urls', 'yaksh'))),
     url(r'^exam/reset/', include('django.contrib.auth.urls')),
