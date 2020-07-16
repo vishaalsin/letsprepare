@@ -151,7 +151,17 @@ PRODUCTION_URL = 'your_project_url'
 
 # Set this variable to <False> once the project is in production.
 # If this variable is kept <True> in production, email will not be verified.
-IS_DEVELOPMENT = False
+IS_DEVELOPMENT = True
+
+sid = 'AC7e82d08cd30894c9095a736ce2ad86d6'
+token = '1bfe2294a4056ddbbff0c9874acfceed'
+
+rzp_key_dev = 'rzp_live_9zb2E4YL6cNIkq'
+rzp_secret_key_dev = 'Ic7VvugaLabrdFxDXR61nirP'
+
+rzp_key_prod = 'rzp_test_umaqsYw2Tc5MPO'
+rzp_secret_key_prod = 'pDdpH12yVTg160Ar8bwwjupk'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = IS_DEVELOPMENT

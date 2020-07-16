@@ -1683,7 +1683,7 @@ def create_quiz(quiz_description, quiz_code, quiz_duration, price, is_free, user
         start_date_time=timezone.now(),
         end_date_time=timezone.now() + timedelta(176590),
         duration=quiz_duration,
-        is_free=True if is_free=='True' else False,
+        is_free= is_free,
         active=True,
         attempts_allowed=2,
         time_between_attempts=0,

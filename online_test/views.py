@@ -9,3 +9,7 @@ def index(request):
         return redirect('/letsprepare')
     else:
         return redirect('exam/manage'.format(URL_ROOT))
+
+
+def return_terms(request):
+    return render(request, 'yaksh/terms_and_conditions.html')

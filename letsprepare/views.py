@@ -19,17 +19,15 @@ from online_test import settings
 import razorpay
 
 if not settings.IS_DEVELOPMENT:
-    key = 'rzp_live_9zb2E4YL6cNIkq'
-    secret_key = 'Ic7VvugaLabrdFxDXR61nirP'
+    key = settings.rzp_key_dev
+    secret_key = settings.rzp_secret_key_dev
 else:
-    key = 'rzp_test_umaqsYw2Tc5MPO'
-    secret_key = 'pDdpH12yVTg160Ar8bwwjupk'
+    key = settings.rzp_key_prod
+    secret_key = settings.rzp_secret_key_prod
 
 client = razorpay.Client(auth=(key, secret_key))
 
-sid = 'AC7e82d08cd30894c9095a736ce2ad86d6'
-token = '1bfe2294a4056ddbbff0c9874acfceed'
-tw_client = Client(sid, token)
+tw_client = Client(settings.sid, settings.token)
 
 @login_required
 @has_profile
