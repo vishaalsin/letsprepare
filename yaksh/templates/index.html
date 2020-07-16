@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'homepage/style.css' %}">
-  <title>Frontend Mentor | Fylo landing page with dark theme and features grid</title>
+  <title>Mission PCS</title>
 
 </head>
 {% endblock %}
@@ -18,7 +18,7 @@
 
   <header>
     <div class="navigation">
-      <a href="#" class="logo-header"><img src="{% static 'yaksh/images/lp.png' %}" alt="fylo logo" class="logo-header-img"></a>
+      <a href="#" class="logo-header"><img src="{% static 'yaksh/images/lp2.png' %}" alt="fylo logo" class="logo-header-img"></a>
       <nav>
         <ul class="nav-items-list">
           <li class="nav-item"><a href="#">About Us</a></li>
@@ -36,13 +36,30 @@
     <div class="main-container">
       <section class="intro">
         <div class="section-container">
-          <img src="{% static 'homepage/images/illustration-intro.png' %}" alt="intro illustration" class="intro-illustration-img">
-          <h1>All your files in one secure location, accessible anywhere.</h1>
-          <p>Fylo stores all your most important files in one secure location. Access them wherever 
-            you need, share and collaborate with friends family, and co-workers.</p>
-          <a href="#" class="cta cta-intro">Get Started</a>
+          <img src="{% static 'homepage/images/missionpcs.jpg' %}" alt="intro illustration" class="intro-illustration-img">
+          <h1> Accomplish "Mission PCS" with your personal AI guide</h1>
+          <a href="#" class="cta cta-intro">Start your free trial</a>
         </div>
       </section>
+
+                <div class="card-body" style="background-color: #1C2531;">
+            <div class="primary-signup">
+            <div class="signup-container">
+              <div class="signup-text">
+                <center><h2>How it works:</h2>
+                <ul>
+                  <li><p>&bull; Sign-up with your contact details.</p></li>
+                  <li><p>&bull; Select subjects you wish to practise and take a free trial test.</p></li>
+                  <li><p>&bull; Go to 'Unlock tests' section, add desired tests to cart and checkout.</p></li>
+                  <li><p>&bull; Start practising and tracking your performance in 'Results' section.</p></li>
+                    </ul>
+                </center>
+              </div>
+            </div>
+          </div>
+          </div>
+
+
       <section class="primary">
         <div class="section-container">
 
@@ -51,52 +68,51 @@
 
               <div class="access-feature feature">
                 <div class="feature-image">
-                  <img src="{% static 'homepage/images/icon-access-anywhere.svg' %}" alt="access feature image" class="access-feature-img">
+                  <img src="{% static 'homepage/images/ai.png' %}" alt="access feature image" class="access-feature-img">
                 </div>
                 <div class="feature-details">
-                  <h3 class="access-feature-heading">Access your files, anywhere</h3>
+                  <h3 class="access-feature-heading">AI-powered test series</h3>
                   <p class="access-feature-body">
-                    The ability to use a smartphone, tablet, or computer to access your account means your 
-                    files follow you everywhere.
+                    Experts and AI select most important questions and current affairs topics, based on previous year trends.
                   </p>
                 </div>
               </div>
 
               <div class="security-feature feature">
                 <div class="feature-image">
-                  <img src="{% static 'homepage/images/icon-security.svg' %}" alt="security feature image" class="security-feature-img">
+                  <img src="{% static 'homepage/images/dart.png' %}" alt="security feature image" class="security-feature-img">
                 </div>
                 <div class="feature-details">
-                  <h3 class="security-feature-heading">Security you can trust</h3>
+                  <h3 class="security-feature-heading">Focused, topic-wise practise</h3>
                   <p class="security-feature-body">
-                    2-factor authentication and user-controlled encryption are just a couple of the security 
-                    features we allow to help secure your files.
+                                        Choose from expert curated test-topics and practice in accordance with your pace of preparation.
+
                   </p>
                 </div>
               </div>
 
               <div class="collaboration-feature feature">
                 <div class="feature-image">
-                  <img src="{% static 'homepage/images/icon-collaboration.svg' %}" alt="collaboration feature image" class="collaboration-feature-img">
+                  <img src="{% static 'homepage/images/analytics.png' %}" alt="collaboration feature image" class="collaboration-feature-img">
                 </div>
                 <div class="feature-details">
-                  <h3 class="collaboration-feature-heading">Real-time collaboration</h3>
+                  <h3 class="collaboration-feature-heading">Expert performance analytics</h3>
                   <p class="collaboration-feature-body">
-                    Securely share files and folders with friends, family and colleagues for live collaboration. 
-                    No email attachments required.
+                                        AI-driven performance analytics with expert-designed frameworks. Track performance, indentify blind spots and keep getting better.
+
                   </p>
                 </div>
               </div>
 
               <div class="files-feature feature">
                 <div class="feature-image">
-                  <img src="{% static 'homepage/images/icon-any-file.svg' %}" alt="files feature image" class="files-feature-img">
+                  <img src="{% static 'homepage/images/previous.png' %}" alt="files feature image" class="files-feature-img">
                 </div>
                 <div class="feature-details">
-                  <h3 class="files-feature-heading">Store any type of file</h3>
+                  <h3 class="files-feature-heading">Previous year questions</h3>
                   <p class="files-feature-body">
-                    Whether you're sharing holidays photos or work documents, Fylo has you covered allowing for all 
-                    file types to be securely stored and shared.
+                                        No need to worry about previous year PCS papers. Our tests already include questions from UPPCS, BPSC, RPSC, MPPSC, JPSC etc.
+
                   </p>
                 </div>
               </div>
@@ -104,76 +120,12 @@
             </div>
           </div>
 
-          <div class="primary-focus">
-            <div class="focus-container">
-              <div class="primary-illustration">
-                <img src="{% static 'homepage/images/illustration-stay-productive.png' %}" alt="primary illustration" class="primary-illustration-img">
-              </div>
-              
-              <div class="primary-text">
-                <h2>Stay productive, wherever you are</h2>
-                <p>Never let location be an issue when accessing your files. Fylo has you 
-                  covered for all of your file storage needs.</p>
-                <p>Securely share files and folders with friends, family and colleagues for 
-                  live collaboration. No email attachments required!</p>
-                <p class="arrow-line">
-                  <a href="#" class="arrow-link">See how Fylo works <img src="{% static 'homepage/images/icon-arrow.svg' %}" alt="arrow icon" class="arrow-icon"></a>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="primary-reviews">
-            <div class="reviews-container">
-              <div class="review-box satish">
-                <p>Fylo has improved our team productivity by an order of magnitude. Since 
-                  making the switch our team has become a well-oiled collaboration machine.</p>
-                <div class="reviewer">
-                  <img src="{% static 'homepage/images/profile-1.jpg' %}" alt="reviewer photo" class="reviewer-profile-photo">
-                  <div class="reviewer-details">
-                    <div class="reviewer-name">Satish Patel</div>
-                    <div class="reviewer-designation">Founder & CEO, Huddle</div>
-                  </div>
-                </div>
-              </div>
-              <div class="review-box bruce">
-                <p>Fylo has improved our team productivity by an order of magnitude. Since 
-                  making the switch our team has become a well-oiled collaboration machine.</p>
-                <div class="reviewer">
-                  <img src="{% static 'homepage/images/profile-2.jpg' %}" alt="reviewer photo" class="reviewer-profile-photo">
-                  <div class="reviewer-details">
-                    <div class="reviewer-name">Bruce McKenzie</div>
-                    <div class="reviewer-designation">Founder & CEO, Huddle</div>
-                  </div>
-                </div>
-              </div>
-              <div class="review-box iva">
-                <p>Fylo has improved our team productivity by an order of magnitude. Since 
-                  making the switch our team has become a well-oiled collaboration machine.</p>
-                <div class="reviewer">
-                  <img src="{% static 'homepage/images/profile-3.jpg' %}" alt="reviewer photo" class="reviewer-profile-photo">
-                  <div class="reviewer-details">
-                    <div class="reviewer-name">Iva Boyd</div>
-                    <div class="reviewer-designation">Founder & CEO, Huddle</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="primary-signup"> 
+          <div class="primary-signup">
             <div class="signup-container">
               <div class="signup-text">
-                <h2>Get early access today</h2>
-                <p>It only takes a minute to sign up and our free starter tier is extremely generous. 
-                  If you have any questions, our support team would be happy to help you.</p>
-              </div>
-              <div class="signup-form-box">
-                <form class="form-signup">
-                  <input type="email" id="email" name="email" placeholder="email@example.com" class="email" required> <br/>
-                  <button type="submit" class="cta cta-signup">Get Started For Free</button>
-                  <!-- <input type="submit" value="Get Started For Free" class="cta cta-signup"> -->
-                </form>
+                <h2>Upcoming Features</h2>
+                <p>&bull; Option elimination feature to strengthen your guess-framework.</p>
+                <p>&bull; AI-powered current-affairs to help you prepare with most relevant content.</p>
               </div>
             </div>
           </div>
@@ -181,7 +133,8 @@
         </div>
       </section>
     </div>
-
+{% endblock %}
+{% block footer %}
   <footer>
     <img src="{% static 'yaksh/images/lp.png' %}" alt="fylo logo" class="logo-footer">
     <div class="footer-container grid">
@@ -189,32 +142,21 @@
       <div class="address-container">
         <div class="location-container">
           <img src="{% static 'homepage/images/icon-location.svg' %}" alt="phone icon" class="phone-icon">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-            dolore magna aliqua</p>
+          <p>We are 100% online. Please keep visiting!!</p>
         </div>
         <ul class="contacts-container">
-          <li class="contacts-line-1">
-            <img src="{% static 'homepage/images/icon-phone.svg' %}" alt="phone icon" class="phone-icon">
-            <p>+91-9121XXXXXX</p>
-          </li>
           <li class="contacts-line-2">
             <img src="{% static 'homepage/images/icon-email.svg' %}" alt="email icon" class="email-icon">
-            <p>example@fylo.com</p>
+            <p>missionpcs.help@gmail.com</p>
           </li>
         </ul>
       </div>
 
       <div class="links-container">
         <ul class="links-list-line1">
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Jobs</a></li>
-          <li><a href="#">Press</a></li>
-          <li><a href="#">Blog</a></li>
         </ul>
         <ul class="links-list-line2">
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms and Privacy</a></li>
         </ul>
       </div>
 

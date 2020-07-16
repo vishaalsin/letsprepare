@@ -3,18 +3,20 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from yaksh.decorators import has_profile
-from yaksh.models import QuestionPaper, AnswerPaper
+from yaksh.models import QuestionPaper, AnswerPaper, Profile
 from yaksh.models import LearningModule
-from yaksh.views import my_render_to_response
+from yaksh.views import my_render_to_response, my_redirect
 from rest_framework import status
-from letsprepare.models import AvailableQuizzes
+from letsprepare.models import AvailableQuizzes, PaytmHistory
 from letsprepare.serializers import AvailableQuizzesSerializer, ErrorSerializer
 import json
 from plotly.offline import plot
 import plotly.graph_objs as go
 from twilio.rest import Client
 from random import randint
-
+from letsprepare import Checksum
+import uuid
+from online_test import settings
 
 sid = 'AC7e82d08cd30894c9095a736ce2ad86d6'
 token = '1bfe2294a4056ddbbff0c9874acfceed'
@@ -25,7 +27,7 @@ client = Client(sid, token)
 def show_all_quizzes(request):
     user = request.user
     id = request.GET['id']
-    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user), many=True).data))
+    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful=True), many=True).data))
     availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
     module = LearningModule.objects.get(id = id)
     quizzes = module.get_quiz_units()
@@ -60,7 +62,7 @@ def show_all_modules(request):
     user = request.user
     # exams = Exams.objects.all()
     modules_data = []
-    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user), many=True).data))
+    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful = True), many=True).data))
     availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
     for module in list(LearningModule.objects.all()):
         quizzes = [quiz.id for quiz in module.get_quiz_units()]
@@ -99,20 +101,25 @@ def show_all_on_sale(request):
 @has_profile
 def assign_quizzes(request):
     results = json.loads(request.POST['data'])
-
+    order_id = str(uuid.uuid4())
     try:
         for quiz in results['quizzes']:
             data = {'user' : request.user.id,
-                    'quiz' : quiz
+                    'quiz' : quiz,
+                    'order_id' : order_id
                     }
             available_quizzes_serializer = AvailableQuizzesSerializer(data=data)
             if available_quizzes_serializer.is_valid():
                 available_quizzes_serializer.save()
 
-        return JsonResponse({'SUCCESS': 'Thanks for buying!!'}, status=status.HTTP_201_CREATED)
+        profile = Profile.objects.get(user = request.user)
+
+        paytmParams, checksum, url = get_payment_params(results['amount'], profile.phone_number, request.user.id, request.user.email, order_id)
+
+        return JsonResponse({'paytmParams': paytmParams, 'checksum' : checksum, 'url' : url})
 
     except Exception as e:
-        return JsonResponse(str(e), status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'error' : 'Sorry our payment services are down!! :('})
 
 @login_required
 def show_results(request):
@@ -279,3 +286,94 @@ def send_otp(request):
 
 def index(request):
     return my_render_to_response(request, "index.html")
+
+
+def get_payment_params(amount, mobile_number, user, email, order_id):
+    if settings.IS_DEVELOPMENT:
+        mid = "oUKedp03164710528426"
+    else:
+        mid = "Iprvrg03856151020943"
+
+    if settings.IS_DEVELOPMENT:
+        key = "ztMhgd5TDnBA5jD4"
+    else:
+        key = "1wu3h%2nno90YT9h"
+
+    if settings.IS_DEVELOPMENT:
+        website = "WEBSTAGING"
+    else:
+        website = "DEFAULT"
+
+    paytmParams = {
+
+        # Find your MID in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+        "MID": mid,
+
+        # Find your WEBSITE in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+        "WEBSITE": website,
+
+        # Find your INDUSTRY_TYPE_ID in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+        "INDUSTRY_TYPE_ID": "Retail",
+
+        # WEB for website and WAP for Mobile-websites or App
+        "CHANNEL_ID": "WEB",
+
+        # Enter your unique order id
+        "ORDER_ID": order_id,
+
+        # unique id that belongs to your customer
+        "CUST_ID": str(user),
+
+        # customer's mobile number
+        "MOBILE_NO": str(mobile_number),
+
+        # customer's email
+        "EMAIL": email,
+
+        # Amount in INR that is payble by customer
+        # this should be numeric with optionally having two decimal points
+        "TXN_AMOUNT": str(amount),
+
+        # on completion of transaction, we will send you the response on this URL
+        "CALLBACK_URL": "http://127.0.0.1:8000/letsprepare/verify_payment/",
+    }
+    checksum = Checksum.generateSignature(paytmParams, key)
+
+    if settings.IS_DEVELOPMENT:
+        url = "https://securegw-stage.paytm.in/order/process"
+    else:
+        # for Production
+        url = "https://securegw.paytm.in/order/process"
+
+    return paytmParams, checksum, url
+
+    # Generate checksum for parameters we have
+    # Find your Merchant Key in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys
+
+    # Prepare HTML Form and Submit to Paytm
+
+@csrf_exempt
+def verify_payment(request):
+    if request.method == "POST":
+        if settings.IS_DEVELOPMENT:
+            key = "ztMhgd5TDnBA5jD4"
+        else:
+            key = "1wu3h%2nno90YT9h"
+        data_dict = {}
+        for key_ in request.POST:
+            data_dict[key_] = request.POST[key_]
+        verify = Checksum.verifySignature(data_dict, key, data_dict['CHECKSUMHASH'])
+        if verify:
+            data_dict['status_code'] = 200
+            # return data_dict
+            orders = list(AvailableQuizzes.objects.filter(order_id=data_dict['ORDERID']))
+            user = orders[0].user
+            del data_dict['status_code']
+            PaytmHistory.objects.create(user=user, **data_dict)
+            for order in orders:
+                order.successful = True
+                order.save()
+            return my_redirect('/letsprepare')
+        else:
+            return my_render_to_response(request, 'yaksh/404.html')
+    return my_redirect('/letsprepare')

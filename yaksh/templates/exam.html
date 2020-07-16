@@ -27,9 +27,9 @@
             {% csrf_token %}
             <span class="nav-item"><button class="btn btn-danger btn-lg" type="submit" name="quit">
               {% if paper.questions_unanswered.all %}
-                Quit {{quiz_type}}
+                Submit {{quiz_type}}
               {% else %}
-                Finish {{quiz_type}}
+                Submit {{quiz_type}}
               {% endif %}
             <i class="fa fa-power-off"></i></button></span>
           </form>

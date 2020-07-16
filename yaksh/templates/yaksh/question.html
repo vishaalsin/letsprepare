@@ -334,11 +334,11 @@ question_type = "{{ question.type }}";
           <br>
           <div>
             {% if question.type == "mcq" or  question.type == "mcc" or question.type == "integer" or question.type == "float" or question.type ==  "string" %}
-              <br><button class="btn btn-success" type="submit" name="check" id="check">Submit Answer</button>
+              <br><button class="btn btn-success" type="submit" name="check" id="check">Save and Next</button>
             {% elif question.type == "upload" %}
               <br><button class="btn btn-success" type="submit" name="check" id="check" onClick="return validate();">Upload</button>
             {% elif question.type == "arrange" %}
-              <br><button class="btn btn-success" type="submit" name="check" id="check" onClick="return user_arranged_options();">Submit Answer</button>
+              <br><button class="btn btn-success" type="submit" name="check" id="check" onClick="return user_arranged_options();">Save and Next</button>
             {% else %}
               {% if question in paper.get_questions_unanswered or quiz.is_exercise %}
                 <button class="btn btn-success" type="submit" name="check" id="check" >

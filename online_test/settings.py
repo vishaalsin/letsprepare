@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY', default='dUmMy_s3cR3t_k3y')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost', 'missionpcs.com']
 
 URL_ROOT = ''
 
@@ -215,7 +215,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 TAGGIT_CASE_INSENSITIVE = True
 
-
+SECURE_SSL_REDIRECT = True
 # Celery parameters
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 CELERY_TASK_SERIALIZER = 'json'

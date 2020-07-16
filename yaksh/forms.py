@@ -396,6 +396,7 @@ class UserRegisterForm(forms.Form):
         if settings.IS_DEVELOPMENT:
             new_profile.is_email_verified = True
         else:
+            new_profile.is_email_verified = True
             new_profile.activation_key = generate_activation_key(
                 new_user.username)
             new_profile.key_expiry_time = timezone.now() + timezone.timedelta(

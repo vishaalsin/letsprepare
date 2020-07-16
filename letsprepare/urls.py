@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^buy/$', views.show_all_on_sale, name='buy'),
     url(r'^assign_quizzes/$', views.assign_quizzes, name='assign_quizzes'),
     url(r'^report_error/$', views.report_error, name='report_error'),
-    url(r'^send_otp/$', views.send_otp, name='report_error')
+    url(r'^send_otp/$', views.send_otp, name='report_error'),
+    url(r'^verify_payment/$', views.verify_payment, name='get_payment')
 ]

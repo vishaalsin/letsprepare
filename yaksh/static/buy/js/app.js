@@ -106,67 +106,37 @@ function checkoutCart(e){
       sum += parseInt(items[i].cells[1].innerText.replace("Rs.", ""))
       quiz_ids.push(parseInt(items[i].cells[2].innerText))
     }
-    alert(sum)
-    assign_quizzes(quiz_ids)
+//    alert(sum)
+    assign_quizzes(quiz_ids, sum)
 //    window.location.href = "/letsprepare";
 }
 
-function assign_quizzes(quiz_ids) {
-    submitData = {'quizzes' : quiz_ids}
+function assign_quizzes(quiz_ids, sum) {
+    submitData = {'quizzes' : quiz_ids, 'amount' : sum}
 
     $.post("/letsprepare/assign_quizzes/",
   {
     data: JSON.stringify(submitData)
   },
   function(data, status){
-    alert("\nStatus: " + status);
-    window.location.href = "/letsprepare";
+    const row= document.createElement('form');
+    row.name='myForm';
+row.method='POST';
+row.action='https://securegw-stage.paytm.in/order/process';
+
+for (var key in data['paytmParams']) {
+    row.innerHTML += '<input type="hidden" name="' + key + '" value="' + data['paytmParams'][key] + '">'
+    // check if the property/key is defined in the object itself, not in parent
+    }
+    row.innerHTML += '<input type="hidden" name="CHECKSUMHASH" value="' + data['checksum'] + '">'
+    document.body.appendChild(row);
+    row.submit();
   });
 }
 
-function saveIntoStorage(course){
-
-let courses= getCoursesFromStorage();
-
-courses.push(course);
-
-localStorage.setItem('courses', JSON.stringify(courses));
-}
-
-function getCoursesFromStorage(){
-    let courses; 
-
-    if(localStorage.getItem('courses')===null){
-        courses=[];
-    } else{
-        course= JSON.parse(localStorage.getItem('courses'));
-    
-    }
-    return courses;
-}
-
-function getFromLocalStorage(){
-    let coursesLS= getCoursesFromStorage(); 
 
 
-     coursesLS.forEach(function(course) {
 
 
-        const row= document.createElement('tr');
-        row.innerHTML= ` 
-    <tr>
-    <td>
-    <img src="${course.image}" width=100>
-    </td>
-    <td> ${course.title} </td>
-    <td> ${course.price} </td>
-    <td> <a href ="#" class="remove" data-id="${course.id}">X</a> </td>
 
 
-    </tr>
-
-    `;
-        shoppingCartContent.appendChild(row);
-     }); 
-
-}
