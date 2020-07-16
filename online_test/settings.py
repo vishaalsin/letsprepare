@@ -23,10 +23,10 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "yaksh_data", "output")
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='dUmMy_s3cR3t_k3y')
+SECRET_KEY = config('SECRET_KEY', default='dUmMy_haI_k3y_Mer1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost', 'missionpcs.com']
 
@@ -154,7 +154,7 @@ PRODUCTION_URL = 'your_project_url'
 
 # Set this variable to <False> once the project is in production.
 # If this variable is kept <True> in production, email will not be verified.
-IS_DEVELOPMENT = True
+IS_DEVELOPMENT = False
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
@@ -171,7 +171,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
             ],
-            'debug': True,  # make this False in production
+            'debug': False,  # make this False in production
         }
     },
 ]
