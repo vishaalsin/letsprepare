@@ -39,7 +39,7 @@ function buycourse(e){
 
     if(e.target.classList.contains('quiz-on-sale')){
         const quiz_code = e.target.parentElement.parentElement.children[0].innerText;
-    const quiz_price = e.target.parentElement.parentElement.children[2].innerText;
+    const quiz_price = e.target.parentElement.parentElement.children[2].innerText.split(' ')[2];
     const quiz_id = parseInt(e.target.parentElement.parentElement.children[3].innerText);
     addIntoCart(quiz_code, quiz_price, quiz_id);
     }
@@ -49,7 +49,7 @@ function buycourse(e){
         for (var i = 0; i < item_containers.length; i++) {
             if (item_containers[i].classList.contains('card')){
                 const quiz_code = item_containers[i].firstElementChild.firstElementChild.children[0].innerText;
-                const quiz_price = item_containers[i].firstElementChild.firstElementChild.children[2].innerText;
+                const quiz_price = item_containers[i].firstElementChild.firstElementChild.children[2].innerText.split(' ')[2];
                 const quiz_id = parseInt(item_containers[i].firstElementChild.firstElementChild.children[3].innerText);
                 addIntoCart(quiz_code, quiz_price, quiz_id);
             }

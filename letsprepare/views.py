@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from yaksh.decorators import has_profile
-from yaksh.models import QuestionPaper, AnswerPaper, Profile
+from yaksh.models import QuestionPaper, AnswerPaper, Profile, Course
 from yaksh.models import LearningModule
 from yaksh.views import my_render_to_response, my_redirect
 from rest_framework import status
@@ -39,6 +39,7 @@ def show_all_quizzes(request):
     availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful=True), many=True).data))
     availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
     module = LearningModule.objects.get(id = id)
+    course = list(Course.objects.all())[0]
     quizzes = module.get_quiz_units()
     quizzes = sorted(quizzes, key=lambda item: int(item.quiz_code.split('_')[1]))
     answerpapers = AnswerPaper.objects.filter(user=request.user)
@@ -52,7 +53,7 @@ def show_all_quizzes(request):
                 'id': qp.id,
                 'attempts' : question_papers_attempted.count(qp.id)
             })
-            if qz.id in availableQuizIds:
+            if qz.id in availableQuizIds or qz.is_free:
                 question_papers_data[-1]['available'] = True
             else:
                 question_papers_data[-1]['available'] = False
@@ -60,6 +61,7 @@ def show_all_quizzes(request):
     context = {
         'module' : module.name,
         'module_id' : module.id,
+        'course_id' : course.id,
         'user': user,
         'question_papers': question_papers_data
     }
@@ -97,7 +99,7 @@ def show_all_on_sale(request):
         quizzes = sorted(quizzes, key=lambda item: int(item.quiz_code.split('_')[1]))
         quiz_data = []
         for quiz in list(quizzes):
-            quiz_data.append({'name': quiz.description, 'code' : quiz.quiz_code, 'price' : quiz.price, 'id':quiz.id})
+            quiz_data.append({'name': quiz.description, 'code' : quiz.quiz_code, 'price' : quiz.price, 'org_price' : quiz.price *2, 'id':quiz.id})
         modules_data.append({'name': module.description, 'id': module.id, 'quizzes': quiz_data, 'state': 'Active'})
 
     context = {
@@ -191,7 +193,8 @@ def show_results(request):
             scrollZoom=False,
             staticPlot=True
         ), include_plotlyjs=False)
-    return my_render_to_response(request, "yaksh/results.html", context={'question_papers' : question_papers_data, 'plot_div': plot_div, 'plot_div2': plot_div2})
+    return my_render_to_response(request, "yaksh/results.html", context={'question_papers' : question_papers_data, 'plot_div': plot_div, 'plot_div2': plot_div2,
+                                                                         'course_id' : list(Course.objects.all())[0].id})
 
 
 def get_accuracy_graph(question_papers_attempted, answerpapers):
