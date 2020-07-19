@@ -25,9 +25,6 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "yaksh_data", "output")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='dUmMy_haI_k3y_Mer1')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
 ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost', 'missionpcs.com']
 
 URL_ROOT = ''
@@ -156,6 +153,9 @@ PRODUCTION_URL = 'your_project_url'
 # If this variable is kept <True> in production, email will not be verified.
 IS_DEVELOPMENT = False
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = IS_DEVELOPMENT
+
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 TEMPLATES = [
@@ -171,7 +171,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
             ],
-            'debug': False,  # make this False in production
+            'debug': DEBUG,  # make this False in production
         }
     },
 ]

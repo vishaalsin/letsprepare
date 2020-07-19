@@ -689,8 +689,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'institute',
-                  'department', 'roll_number', 'position', 'timezone']
+        fields = ['first_name', 'last_name']
 
     first_name = forms.CharField(max_length=30, widget=forms.TextInput(
                     {'class': form_input_class, 'placeholder': "First Name"}))
@@ -709,23 +708,23 @@ class ProfileForm(forms.ModelForm):
         self.fields['last_name'].widget.attrs.update(
             {'class': form_input_class, 'placeholder': 'Last Name'}
         )
-        self.fields['institute'].widget.attrs.update(
-            {'class': form_input_class, 'placeholder': 'Institute'}
-        )
-        self.fields['department'].widget.attrs.update(
-            {'class': form_input_class, 'placeholder': 'Department'}
-        )
-        self.fields['roll_number'].widget.attrs.update(
-            {'class': form_input_class, 'placeholder': 'Roll Number'}
-        )
-        self.fields['position'].widget.attrs.update(
-            {'class': form_input_class, 'placeholder': 'Position'}
-        )
-        self.fields['timezone'] = forms.ChoiceField(
-            choices=[(tz, tz) for tz in pytz.common_timezones],
-            help_text='All timings are shown based on the selected timezone',
-            widget=forms.Select({'class': 'custom-select'})
-            )
+        # self.fields['institute'].widget.attrs.update(
+        #     {'class': form_input_class, 'placeholder': 'Institute'}
+        # )
+        # self.fields['department'].widget.attrs.update(
+        #     {'class': form_input_class, 'placeholder': 'Department'}
+        # )
+        # self.fields['roll_number'].widget.attrs.update(
+        #     {'class': form_input_class, 'placeholder': 'Roll Number'}
+        # )
+        # self.fields['position'].widget.attrs.update(
+        #     {'class': form_input_class, 'placeholder': 'Position'}
+        # )
+        # self.fields['timezone'] = forms.ChoiceField(
+        #     choices=[(tz, tz) for tz in pytz.common_timezones],
+        #     help_text='All timings are shown based on the selected timezone',
+        #     widget=forms.Select({'class': 'custom-select'})
+        #     )
 
 
 class UploadFileForm(forms.Form):

@@ -20,8 +20,9 @@ django-phonenumber-field
 phonenumbers
 Pillow
 plotly
-crispy_forms
+django-crispy-forms
 psycopg2
 tornado
 pandas
 twilio
+pycrypto

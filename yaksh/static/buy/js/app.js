@@ -121,18 +121,17 @@ function assign_quizzes(quiz_ids, sum) {
   function(data, status){
     const row= document.createElement('form');
     row.name='myForm';
-row.method='POST';
-row.action='https://securegw-stage.paytm.in/order/process';
+    row.method='POST';
+    row.action=data['url'];
 
-for (var key in data['paytmParams']) {
-    row.innerHTML += '<input type="hidden" name="' + key + '" value="' + data['paytmParams'][key] + '">'
-    // check if the property/key is defined in the object itself, not in parent
+    for (var key in data['paymentParams']) {
+        row.innerHTML += '<input type="hidden" name="' + key + '" value="' + data['paymentParams'][key] + '">'
+        // check if the property/key is defined in the object itself, not in parent
+        }
+        document.body.appendChild(row);
+        row.submit();
+      });
     }
-    row.innerHTML += '<input type="hidden" name="CHECKSUMHASH" value="' + data['checksum'] + '">'
-    document.body.appendChild(row);
-    row.submit();
-  });
-}
 
 
 

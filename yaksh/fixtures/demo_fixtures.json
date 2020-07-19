@@ -116,6 +116,7 @@
   "fields": {
     "user": 2,
     "roll_number": "12345",
+    "is_email_verified" : true,
     "institute": "Demo",
     "department": "Demo",
     "position": "Faculty",

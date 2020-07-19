@@ -1587,7 +1587,7 @@ def create_modules(request):
                     modules_with_questions_file = pd.read_csv(request.FILES['file'])
                     unique_rows_of_questions_excel_upload = modules_with_questions_file.drop_duplicates()
                     module_and_quiz_wise_grouped_questions = unique_rows_of_questions_excel_upload.groupby(['module_name',	'module_description',	'quiz_description',	'quiz_code',	'quiz_duration',	'price',	'is_free']).agg(list).reset_index()
-                    existing_course = Course.objects.get(id=1)
+                    existing_course = list(Course.objects.all())[0]
                     for i, j in module_and_quiz_wise_grouped_questions.iterrows():
 
                         #Headers of excel file uploaded for a module
@@ -1616,7 +1616,7 @@ def create_modules(request):
                     return prof_manage(request, msg)
                 except:
                     msg = 'Unable to upload file'
-                    prof_manage(request, msg)
+                    return prof_manage(request, msg)
     upload_form = UploadFileForm()
     context['upload_form'] = upload_form
     messages.info(request, '')
