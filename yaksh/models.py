@@ -1248,6 +1248,7 @@ class Profile(models.Model):
     department = models.CharField(max_length=64)
     position = models.CharField(max_length=64)
     is_moderator = models.BooleanField(default=False)
+    full_access = models.BooleanField(default=False)
     timezone = models.CharField(
         max_length=64,
         default=pytz.utc.zone,

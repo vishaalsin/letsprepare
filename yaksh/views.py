@@ -534,7 +534,7 @@ def start(request, questionpaper_id=None, attempt_num=None, course_id=None,
     user = request.user
     availableQuizzes = json.loads(
         json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user), many=True).data))
-    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes if quiz['successful']]
     # check conditions
     try:
         quest_paper = QuestionPaper.objects.get(id=questionpaper_id)
@@ -552,9 +552,10 @@ def start(request, questionpaper_id=None, attempt_num=None, course_id=None,
             return prof_manage(request, msg=msg)
         return view_module(request, module_id=module_id, course_id=course_id,
                            msg=msg)
-    if quest_paper.quiz.id not in availableQuizIds:
-        messages.warning(request, 'Quiz not available. Please unlock.')
-        return my_redirect('/letsprepare/buy')
+    if not user.profile.full_access and not quest_paper.quiz.is_free:
+        if quest_paper.quiz.id not in availableQuizIds:
+            messages.warning(request, 'Quiz not available. Please unlock.')
+            return my_redirect('/letsprepare/buy')
     course = Course.objects.get(id=course_id)
     learning_module = course.learning_module.get(id=module_id)
     learning_unit = learning_module.learning_unit.get(quiz=quest_paper.quiz.id)
