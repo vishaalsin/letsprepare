@@ -319,7 +319,7 @@ def send_otp(request):
     otp = randint(111111,999999)
     try:
         message = tw_client.messages.create(
-        body='Hi there! Your OTP to register on letsprepare is : ' + str(otp),
+        body='Hi there! Your OTP to register on missionpcs is : ' + str(otp),
         from_='+12137252282',
         to=number
         )
