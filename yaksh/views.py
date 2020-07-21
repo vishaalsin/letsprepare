@@ -153,13 +153,13 @@ def user_register(request):
             new_user = authenticate(username=u_name, password=pwd)
             login(request, new_user)
             initiate_user(new_user)
-            if user_email and key:
-                success, msg = send_user_mail(user_email, key)
-                context = {'activation_msg': msg}
-                return my_render_to_response(
-                    request,
-                    'yaksh/activation_status.html', context
-                )
+            # if user_email and key:
+            #     success, msg = send_user_mail(user_email, key)
+            #     context = {'activation_msg': msg}
+            #     return my_render_to_response(
+            #         request,
+            #         'yaksh/activation_status.html', context
+            #     )
             return index(request)
         else:
             return my_render_to_response(

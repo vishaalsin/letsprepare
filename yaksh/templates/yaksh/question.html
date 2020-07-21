@@ -29,6 +29,7 @@
 <script src="{% static 'yaksh/js/codemirror/mode/r/r.js' %}"></script>
 <script type="text/javascript" src="{% static 'yaksh/js/mathjax/MathJax.js' %}?config=TeX-MML-AM_CHTML"></script>
 <script src="{% static 'yaksh/js/jquery-sortable.js' %}"></script>
+<script>document.addEventListener('contextmenu', event => event.preventDefault());</script>
 <script>
 init_val = '{{ last_attempt|escape_quotes|safe }}';
 lang = "{{ question.language }}"

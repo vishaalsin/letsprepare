@@ -74,10 +74,10 @@ def show_all_modules(request):
     availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful = True), many=True).data))
     availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
     for module in list(LearningModule.objects.all()):
-        quizzes = [quiz.id for quiz in module.get_quiz_units()]
+        quizzes = module.get_quiz_units()
         has_quizzes = 0
-        for quiz_id in quizzes:
-            if quiz_id in availableQuizIds:
+        for quiz in quizzes:
+            if quiz.id in availableQuizIds or quiz.is_free:
                 has_quizzes += 1
         modules_data.append({'name' : module.description, 'id' : module.id,
                               'total_quizzes' : len(quizzes), 'has_quizzes' : has_quizzes })
@@ -329,7 +329,10 @@ def send_otp(request):
 
 
 def index(request):
-    return my_render_to_response(request, "index.html")
+    if request.user.id == None:
+        return my_render_to_response(request, "index.html")
+    else:
+        return my_redirect('/exam/login/?next=/letsprepare/show_modules/')
 
 @csrf_exempt
 def verify_payment(request):
