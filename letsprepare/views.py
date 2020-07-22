@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from yaksh.decorators import has_profile
 from yaksh.models import QuestionPaper, AnswerPaper, Profile, Course
-from yaksh.models import LearningModule
+from yaksh.models import LearningModule, Quiz
 from yaksh.views import my_render_to_response, my_redirect
 from rest_framework import status
 from letsprepare.models import AvailableQuizzes, PaytmHistory
@@ -92,13 +92,20 @@ def show_all_modules(request):
 def show_all_on_sale(request):
     user = request.user
     modules_data = []
+    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful=True), many=True).data))
+    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
     for module in list(LearningModule.objects.all()):
         quizzes = module.get_quiz_units()
         quizzes = sorted(quizzes, key=lambda item: int(item.quiz_code.split('_')[1]))
         quiz_data = []
         for quiz in list(quizzes):
             quiz_data.append({'name': quiz.description, 'code' : quiz.quiz_code, 'price' : quiz.price, 'org_price' : quiz.price *2, 'id':quiz.id})
-        modules_data.append({'name': module.description, 'id': module.id, 'quizzes': quiz_data, 'state': 'Active'})
+            if quiz.id in availableQuizIds or quiz.is_free:
+                quiz_data[-1]['available'] = True
+            else:
+                quiz_data[-1]['available'] = False
+        module_price = sum([quiz['price'] for quiz in quiz_data if not quiz['available']])
+        modules_data.append({'name': module.description, 'id': module.id, 'quizzes': quiz_data, 'state': 'Active', 'org_price' : module_price *2, 'price' : module_price})
 
     context = {
         'user': user, 'modules': modules_data,
@@ -118,7 +125,10 @@ def assign_quizzes(request):
         phone = profile.phone_number
         email = profile.user.email
         product = 'Tests'
-        order_amount = int(results['amount'])*100
+
+        amount = sum([quiz.price for quiz in Quiz.objects.filter(id__in=[quiz for quiz in results['quizzes']])])
+
+        order_amount = amount*100
 
         order_currency = 'INR'
         order_receipt = ''
@@ -302,12 +312,14 @@ def get_percentage_graph(question_papers_attempted, answerpapers):
 @has_profile
 def report_error(request):
     data = json.loads(request.POST['data'])
+    if len(data['error']) == 0:
+        data['error'] = '_'
     try:
         error_serializer = ErrorSerializer(data=data)
         if error_serializer.is_valid():
             error_serializer.save()
 
-        return JsonResponse({'SUCCESS': 'Thanks for buying!!'}, status=status.HTTP_201_CREATED)
+        return JsonResponse({'SUCCESS': 'Thanks!!'}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         return JsonResponse({'error' : str(e)}, status=status.HTTP_400_BAD_REQUEST)

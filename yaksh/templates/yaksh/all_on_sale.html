@@ -97,14 +97,14 @@
                 <div class="card">
                     <div class="card-header" data-toggle="collapse" href="#collapse{{module.id}}"><i id="toggle_course_{{module.id}}"></i>
                         <div class="row">
-                            <div class="col-md-11">{{module.name}}</div>
-                            <div class="col-md-1">
-                                <a href="#" class="u-full-width button-primary button input add-to-cart fa fa-cart-plus module-on-sale" data-id="1"></a>
-                            </div>
+                            <div class="col-md-10">{{module.name}}</div>
+                            <div class="col-md-2">Rs. <strike>{{ module.org_price }}</strike> {{ module.price }}</div>
                         </div>
                     </div>
                     <div id="collapse{{module.id}}" class="collapse hide" data-parent="#accordion">
                         <div class="card-body">
+                            <center><a href="#" class="btn btn-success btn-lg input add-to-cart module-on-sale">BUY COMPLETE MODULE</a></center>
+                            <br>
                             {% for quiz in module.quizzes %}
 
 
@@ -123,9 +123,18 @@
                             <div style = "display:none">
                                 {{ quiz.id }}
                             </div>
+                            <div style = "display:none">
+                                {{ quiz.available }}
+                            </div>
+                            {% if quiz.available %}
+                            <div>
+                                <p class="fa fa-check-circle col-md-1 u-full-width" style="color:#4BB04F;" data-id="1"></p>
+                            </div>
+                            {% else %}
                             <div>
                                 <a href="#" class="fa fa-cart-plus col-md-1 u-full-width button-primary button input add-to-cart quiz-on-sale" data-id="1"></a>
                             </div>
+                            {% endif %}
                     </div>
                 </div>
                 </div>

@@ -41,7 +41,10 @@ function buycourse(e){
     const quiz_code = e.target.parentElement.parentElement.children[0].innerText.trim();
     const quiz_price = e.target.parentElement.parentElement.children[2].innerText.trim().split(' ')[2];
     const quiz_id = parseInt(e.target.parentElement.parentElement.children[3].innerText.trim());
+    const quiz_availibility = e.target.parentElement.parentElement.children[4].innerText.trim();
+    if(quiz_availibility == 'False'){
     addIntoCart(quiz_code, quiz_price, quiz_id);
+    }
     }
 
     if(e.target.classList.contains('module-on-sale')){
@@ -51,7 +54,10 @@ function buycourse(e){
                 const quiz_code = item_containers[i].firstElementChild.firstElementChild.children[0].innerText.trim();
                 const quiz_price = item_containers[i].firstElementChild.firstElementChild.children[2].innerText.trim().split(' ')[2];
                 const quiz_id = parseInt(item_containers[i].firstElementChild.firstElementChild.children[3].innerText.trim());
+                const quiz_availibility = item_containers[i].firstElementChild.firstElementChild.children[4].innerText.trim();
+                if(quiz_availibility == 'False'){
                 addIntoCart(quiz_code, quiz_price, quiz_id);
+                }
             }
 }
     }
