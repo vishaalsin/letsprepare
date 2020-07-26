@@ -27,3 +27,4 @@ pandas
 twilio
 pycrypto
 razorpay
+django-allauth
