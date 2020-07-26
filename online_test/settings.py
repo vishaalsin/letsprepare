@@ -38,6 +38,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
     'yaksh',
     'taggit',
     'social_django',
@@ -52,6 +55,8 @@ INSTALLED_APPS = (
     'letsprepare.apps.letsprepareConfig',
     'crispy_forms',
 )
+
+SITE_ID = 1
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -162,6 +167,7 @@ rzp_secret_key_dev = 'Ic7VvugaLabrdFxDXR61nirP'
 rzp_key_prod = 'rzp_test_umaqsYw2Tc5MPO'
 rzp_secret_key_prod = 'pDdpH12yVTg160Ar8bwwjupk'
 
+twilio_number = '+12137252282'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = IS_DEVELOPMENT

@@ -11,6 +11,8 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', admin.site.urls),
+    url(r'^account/', include('allauth.urls')),
+    url(r'^reset_password/', views.reset_password, name='reset_password'),
     url(r'^terms/', views.return_terms, name='terms'),
     url(r'^$', views.index, name='index'),
     url(r'^exam/', include(('yaksh.urls', 'yaksh'))),

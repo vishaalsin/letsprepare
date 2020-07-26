@@ -273,6 +273,12 @@ def get_object_form(model, exclude_fields=None):
             exclude = exclude_fields
     return _ObjectForm
 
+class PasswordResetForm(forms.Form):
+    country_code = forms.ChoiceField(choices=country_codes, initial="IN-91", required=True, widget=forms.Select(
+        attrs={"class": "form-control", 'placeholder': "country code"}))
+    phone_number = forms.CharField(max_length=10, widget=forms.TextInput(
+        {'class': form_input_class, 'placeholder': "Phone Number"}
+    ))
 
 class UserRegisterForm(forms.Form):
     """A Class to create new form for User's Registration.

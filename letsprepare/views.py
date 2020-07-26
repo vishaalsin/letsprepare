@@ -329,15 +329,20 @@ def send_otp(request):
     data = json.loads(request.POST['data'])
     number = data['number']
     otp = randint(111111,999999)
+    body = 'Hi there! Your OTP to register on missionpcs is : ' + str(otp)
     try:
-        message = tw_client.messages.create(
-        body='Hi there! Your OTP to register on missionpcs is : ' + str(otp),
-        from_='+12137252282',
-        to=number
-        )
+        send_sms(body, number)
         return JsonResponse({'SENT': otp})
     except Exception as e:
         return JsonResponse({'NUMBER NOT VALID' : str(e)})
+
+
+def send_sms(body, number):
+    message = tw_client.messages.create(
+        body = body,
+        from_= settings.twilio_number,
+        to = number
+    )
 
 
 def index(request):
