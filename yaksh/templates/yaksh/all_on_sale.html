@@ -41,9 +41,14 @@
                                     <a href="#" id="clear-cart" class="button2 u-full-width">Clear Cart</a>
                                     <br>
                                     <br>
-                                    <a href="#" id="cart-checkout" class="button2 u-full-width" style="background-color: #33C3F0;">CHeckout</a>
+                                    {% if user.is_authenticated %}
+                                    <a href="#" id="cart-checkout" class="button2 u-full-width" style="background-color: #33C3F0;">Checkout</a>
+                                    {% else %}
+                                    <a href="/exam/login/?next=/letsprepare/show_modules/" id="cart-checkout_" class="button2 u-full-width" style="background-color: #33C3F0;">Login to Buy</a>
+                                    {% endif %}
                             </div>
             </li>
+            {% if user.is_authenticated %}
             <li class="nav-item dropdown my-lg-0" style="font-size: 1.2rem">
                 <a class="dropdown-toggle nav-link" id="user_dropdown" data-toggle="dropdown" href="#">{{user.get_full_name|title}}
                 </a>
@@ -67,6 +72,7 @@
                     </a>
                 </div>
             </li>
+            {% endif %}
         </ul>
         </div>
     </nav>

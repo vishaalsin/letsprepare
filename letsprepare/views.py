@@ -29,18 +29,22 @@ client = razorpay.Client(auth=(key, secret_key))
 
 tw_client = Client(settings.sid, settings.token)
 
-@login_required
-@has_profile
 def show_all_quizzes(request):
     user = request.user
     id = request.GET['id']
-    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful=True), many=True).data))
-    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    try:
+        availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful=True), many=True).data))
+        availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    except:
+        availableQuizIds = []
     module = LearningModule.objects.get(id = id)
     course = list(Course.objects.all())[0]
     quizzes = module.get_quiz_units()
     quizzes = sorted(quizzes, key=lambda item: int(item.quiz_code.split('_')[1]))
-    answerpapers = AnswerPaper.objects.filter(user=request.user)
+    try:
+        answerpapers = AnswerPaper.objects.filter(user=request.user)
+    except:
+        answerpapers = []
     question_papers_attempted = [i.question_paper.id for i in answerpapers]
     question_papers_data = []
     for qz in quizzes:
@@ -65,14 +69,15 @@ def show_all_quizzes(request):
     }
     return render(request, 'yaksh/all_question_papers.html', context)
 
-@login_required
-@has_profile
 def show_all_modules(request):
     user = request.user
     # exams = Exams.objects.all()
     modules_data = []
-    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful = True), many=True).data))
-    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    try:
+        availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful = True), many=True).data))
+        availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    except:
+        availableQuizIds = []
     for module in list(LearningModule.objects.all()):
         quizzes = module.get_quiz_units()
         has_quizzes = 0
@@ -87,13 +92,14 @@ def show_all_modules(request):
     }
     return my_render_to_response(request, "yaksh/all_modules.html", context)
 
-@login_required
-@has_profile
 def show_all_on_sale(request):
     user = request.user
     modules_data = []
-    availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful=True), many=True).data))
-    availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    try:
+        availableQuizzes = json.loads(json.dumps(AvailableQuizzesSerializer(AvailableQuizzes.objects.filter(user=user, successful=True), many=True).data))
+        availableQuizIds = [quiz['quiz'] for quiz in availableQuizzes]
+    except:
+        availableQuizIds = []
     for module in list(LearningModule.objects.all()):
         quizzes = module.get_quiz_units()
         quizzes = sorted(quizzes, key=lambda item: int(item.quiz_code.split('_')[1]))

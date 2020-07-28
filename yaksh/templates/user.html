@@ -17,6 +17,7 @@
             <li class="nav-item"><a class="nav-link" href="{% url 'letsprepare:buy' %}"><i class="fa fa-unlock" style="size: 18px"></i>&nbsp;Unlock Tests</a></li>
         </ul>
         <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
             <li class="nav-item dropdown my-lg-0" style="font-size: 1.2rem">
                 <a class="dropdown-toggle nav-link" id="user_dropdown" data-toggle="dropdown" href="#">{{user.get_full_name|title}}
                 </a>
@@ -40,6 +41,7 @@
                     </a>
                 </div>
             </li>
+            {% endif %}
         </ul>
         </div>
     </nav>
