@@ -18,11 +18,11 @@
 
   <header>
     <div class="navigation">
-      <a href="#" class="logo-header"><img src="{% static 'yaksh/images/lp2.png' %}" alt="fylo logo" class="logo-header-img"></a>
+      <a href="#" class="logo-header"><img src="{% static 'yaksh/images/lp.png' %}" alt="fylo logo" class="logo-header-img"></a>
       <nav>
         <ul class="nav-items-list">
-          <li class="nav-item"><a href="#">About Us</a></li>
-          <li class="nav-item"><a href="/exam/login/?next=/letsprepare/show_modules/">Login/Register</a></li>
+          <li class="nav-item"><a href="/letsprepare/show_modules/" class="cta cta-top">View Modules</a></li>
+          <li class="nav-item"><a href="/exam/login/?next=/letsprepare/show_modules/" class="cta cta-top">Login/Register</a></li>
         </ul>
       </nav>
     </div>
@@ -38,11 +38,68 @@
         <div class="section-container">
           <img src="{% static 'homepage/images/missionpcs.jpg' %}" alt="intro illustration" class="intro-illustration-img">
           <h1> Accomplish "Mission PCS" with your personal AI guide</h1>
-          <a href="/letsprepare/show_modules/" class="cta cta-intro">Take free tour</a>
+          <a href="/letsprepare/show_modules/" class="cta cta-intro">TAKE A TOUR</a>
         </div>
       </section>
 
-                <div class="card-body" style="background-color: #1C2531;">
+      <section class="primary">
+        <div class="section-container">
+
+          <div class="primary-features">
+            <div class="features-container">
+
+              <div class="access-feature feature">
+                <div class="feature-image">
+                  <img src="{% static 'homepage/images/previous.png' %}" alt="access feature image" class="access-feature-img">
+                </div>
+                <div class="feature-details">
+                  <h3 class="access-feature-heading">Previous year questions</h3>
+                  <p class="access-feature-body">
+                    We cover previous 20-year questions of various state service examinations like UPPCS, BPSC, RPSC, MPPSC, JPSC etc.
+                  </p>
+                </div>
+              </div>
+
+              <div class="security-feature feature">
+                <div class="feature-image">
+                  <img src="{% static 'homepage/images/dart.png' %}" alt="security feature image" class="security-feature-img">
+                </div>
+                <div class="feature-details">
+                  <h3 class="security-feature-heading">Focused, topic-wise practise</h3>
+                  <p class="security-feature-body">
+                    Choose from comprehensively curated topic-based tests. You can now practise in accordance with the pace of your preparation.
+                  </p>
+                </div>
+              </div>
+
+              <div class="collaboration-feature feature">
+                <div class="feature-image">
+                  <img src="{% static 'homepage/images/AI.png' %}" alt="collaboration feature image" class="collaboration-feature-img">
+                </div>
+                <div class="feature-details">
+                  <h3 class="collaboration-feature-heading">AI-powered test series</h3>
+                  <p class="collaboration-feature-body">
+                    Experts and AI select most important questions and current affairs, based on previous year trends.
+                  </p>
+                </div>
+              </div>
+
+              <div class="files-feature feature">
+                <div class="feature-image">
+                  <img src="{% static 'homepage/images/analytics.png' %}" alt="files feature image" class="files-feature-img">
+                </div>
+                <div class="feature-details">
+                  <h3 class="files-feature-heading">Expert performance analytics</h3>
+                  <p class="files-feature-body">
+                   Track performance and indentify blind spots with expert-designed Performance Analytics Framework.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+                          <div class="card-body" style="background-color: #1C2531;">
             <div class="primary-signup">
             <div class="signup-container">
               <div class="signup-text">
@@ -60,66 +117,6 @@
           </div>
 
 
-      <section class="primary">
-        <div class="section-container">
-
-          <div class="primary-features">
-            <div class="features-container">
-
-              <div class="access-feature feature">
-                <div class="feature-image">
-                  <img src="{% static 'homepage/images/ai.png' %}" alt="access feature image" class="access-feature-img">
-                </div>
-                <div class="feature-details">
-                  <h3 class="access-feature-heading">AI-powered test series</h3>
-                  <p class="access-feature-body">
-                    Experts and AI select most important questions and current affairs, based on previous year trends.
-                  </p>
-                </div>
-              </div>
-
-              <div class="security-feature feature">
-                <div class="feature-image">
-                  <img src="{% static 'homepage/images/dart.png' %}" alt="security feature image" class="security-feature-img">
-                </div>
-                <div class="feature-details">
-                  <h3 class="security-feature-heading">Focused, topic-wise practise</h3>
-                  <p class="security-feature-body">
-                                        Choose from expert curated test-topics and practice in accordance with your pace of preparation.
-
-                  </p>
-                </div>
-              </div>
-
-              <div class="collaboration-feature feature">
-                <div class="feature-image">
-                  <img src="{% static 'homepage/images/analytics.png' %}" alt="collaboration feature image" class="collaboration-feature-img">
-                </div>
-                <div class="feature-details">
-                  <h3 class="collaboration-feature-heading">Expert performance analytics</h3>
-                  <p class="collaboration-feature-body">
-                                        AI-driven performance analytics with expert-designed frameworks. Track performance, indentify blind spots and keep getting better.
-
-                  </p>
-                </div>
-              </div>
-
-              <div class="files-feature feature">
-                <div class="feature-image">
-                  <img src="{% static 'homepage/images/previous.png' %}" alt="files feature image" class="files-feature-img">
-                </div>
-                <div class="feature-details">
-                  <h3 class="files-feature-heading">Previous year questions</h3>
-                  <p class="files-feature-body">
-                                        No need to worry about previous year PCS papers. Our tests already include questions from UPPCS, BPSC, RPSC, MPPSC, JPSC etc.
-
-                  </p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
           <div class="primary-signup">
             <div class="signup-container">
               <div class="signup-text">
@@ -132,6 +129,9 @@
 
         </div>
       </section>
+
+
+
     </div>
 {% endblock %}
 {% block footer %}

@@ -57,6 +57,15 @@ header, .primary-signup {
 footer {
     background-color: var(--Dark-Blue-footer-bg);
 }
+
+.cta-top {
+    text-align: center;
+    background-image: linear-gradient(to right, var(--Blue-cta-grad) , var(--Blue-cta-grad));
+    border-radius: 20px;
+    padding: 0.3em 2.2em;
+    cursor: pointer;
+}
+
 .cta-intro {
     text-align: center;
     background-image: linear-gradient(to right, var(--Cyan-cta-grad) , var(--Blue-cta-grad));
@@ -138,7 +147,7 @@ header {
     /* margin-left: 5%; */
 }
 .primary > .section-container >.primary-features {
-    padding: 100px 0;
+    padding: 35px 0;
     /* border: 1px solid white; */
 }
 
