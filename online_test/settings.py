@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'allauth',
+    # 'allauth',
     'allauth.account',
     'yaksh',
     'taggit',
@@ -56,7 +56,7 @@ INSTALLED_APPS = (
     'crispy_forms',
 )
 
-SITE_ID = 1
+# SITE_ID = 1
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -156,7 +156,7 @@ PRODUCTION_URL = 'your_project_url'
 
 # Set this variable to <False> once the project is in production.
 # If this variable is kept <True> in production, email will not be verified.
-IS_DEVELOPMENT = False
+IS_DEVELOPMENT = True
 
 sid = 'AC7e82d08cd30894c9095a736ce2ad86d6'
 token = '1bfe2294a4056ddbbff0c9874acfceed'

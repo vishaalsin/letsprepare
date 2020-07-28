@@ -32,16 +32,18 @@ def reset_password(request):
             user = Profile.objects.get(phone_number = phone_number).user
             user_name = user.username
             temp_key = token_generator.make_token(user)
-            path = reverse("account_reset_password_from_key",
-                           kwargs=dict(uidb36=user_pk_to_url_str(user), key=temp_key))
+            user_str = user_pk_to_url_str(user)
+            path = '/account/password/reset/key/' + '-'.join([user_str,temp_key])
+            # path = reverse("account_reset_password_from_key",
+            #                kwargs=dict(uidb36=user_pk_to_url_str(user), key=temp_key))
             number = "+" + country_code.split("-")[1] + phone_number
             link = request.build_absolute_uri().replace(request.get_full_path(), '') + path
             body = 'Hi There! Please go to following link to reset your password : \n' + link \
                     + '\n Your username is : ' + user_name
             send_sms(body,number)
-            return render(request, 'registration/password_reset_done.html')
+            return render(request, 'registrations/password_reset_done.html')
         except:
-            return render(request, 'registration/password_reset_not_done.html')
+            return render(request, 'registrations/password_reset_not_done.html')
     else:
         form = PasswordResetForm()
-        return render(request, 'registration/password_reset_form.html', context={'form' : form})
+        return render(request, 'registrations/password_reset_form.html', context={'form' : form})
