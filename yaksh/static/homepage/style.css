@@ -87,7 +87,7 @@ header {
     justify-content: space-between;
 }
 .logo-header-img {
-    width: 50%;
+    width: 100%;
 }
 .nav-items-list {
     display: flex;
@@ -520,7 +520,7 @@ i.fa-facebook{
 
 @media only screen and (min-width: 768px) {
     .logo-header-img {
-        width: 60%;
+        width: 100%;
     }
     .nav-item {
         margin-left: 1.5em;
@@ -569,7 +569,7 @@ i.fa-facebook{
 
 @media only screen and (min-width: 885px) {
     .logo-header-img {
-        width: 70%;
+        width: 100%;
     }
     .nav-item {
         margin-left: 3em;
