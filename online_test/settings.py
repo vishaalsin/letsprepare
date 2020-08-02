@@ -56,7 +56,7 @@ INSTALLED_APPS = (
     'crispy_forms',
 )
 
-# SITE_ID = 1
+SITE_ID = 1
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
